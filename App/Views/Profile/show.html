@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+
+<h1>Profile</h1>
+
+<!-- umesto ul i li koristimo dl tj. description list sto je prakticno isto, ali semanticki vise odgovara ovom slucaju-->
+<dl class="row">
+    <dt class="col-sm-1">Name</dt>
+    <dd class="col-sm-11">{{ user.name }}</dd>
+    <dt class="col-sm-1">E-mail</dt>
+    <dd class="col-sm-11">{{ user.email }}</dd>
+</dl>
+
+<a href="/profile/edit" class="btn btn-primary">Edit profile</a>
+
+
+
+{% endblock %}

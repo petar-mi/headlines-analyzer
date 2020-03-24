@@ -1,0 +1,6 @@
+# Removes index.php from the request but maintain the query string ('pretty' or 'vanity' URLs)
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?$1 [L,QSA]

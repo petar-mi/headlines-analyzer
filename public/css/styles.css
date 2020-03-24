@@ -1,0 +1,129 @@
+body {
+            margin: 0;
+            padding: 1rem;
+            margin-top: 3em;
+        }
+
+.masonry-with-columns-2 {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-flex-wrap: wrap;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+}
+
+.masonry-with-columns-2 div {
+            height: 190px;
+            /* line-height: 190px; */
+            /* background-color: black; */
+            color: white;
+            margin: 0 1rem 1rem 0;
+            text-align: center;
+            font-weight: 900;
+            font-size: 14px;
+            -webkit-box-flex: 1;
+            -webkit-flex: 1 0 auto;
+            -ms-flex: 1 0 auto;
+            flex: 1 0 auto;
+            width: 150px;
+}
+
+#loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+  }
+  
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+/* keywords on top of images animations*/
+  .fade-in {
+    opacity: 1;
+    animation-name: fadeInOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 0.25s;
+  }
+  
+  @keyframes fadeInOpacity {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .fade-out {
+    opacity: 1;
+    animation-name: fadeOutOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 0.25s;
+  }
+  
+  @keyframes fadeOutOpacity {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* end of keywords on top of images animations*/
+
+  /* dims the image on hover */
+  .image {
+    -webkit-filter: brightness(0.5);
+    filter: brightness(0.5);
+    }
+
+    /* .image {
+    opacity: 1;
+    animation-name: fadeOutOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 0.2s;
+    } */
+  
+/* deo koji sledi je zakomentarisan jer bootstrap imao istoimene alert klase koje hendluju flash messages*/
+/* .alert {
+    border: 1px solid #ccc;
+    padding: 6px;
+    width: 300px;
+    text-align: center;
+}
+
+.alert-info {
+    background-color: #d9edf7;
+}
+
+.alert-warning {
+    background-color: #e4c942;
+}
+
+.alert-success {
+    background-color: #8fe06f;
+} */ 

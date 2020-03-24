@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block footer %}
+
+<script src="/js/hideShowPassword.min.js"></script>
+<!-- jquery plugin skinut s neta koji pravi kucicu za prikazivanje passworda -->
+<script src="/js/app.js"></script> <!-- deo koji se bavi validacijom password-a u jquery-iju -->
+
+<script>
+    $(document).ready(function () {
+        var userId = '{{ user.id }}'; // dodeljujemo js promenjivoj vrednost user.id pomocu twig-a
+        /**
+         * Validate the form
+         */
+        $('#formProfile').validate({
+            rules: {
+                name: 'required',
+                email: {
+                    required: true,
+                    email: true,
+                    remote: {
+                        url: '/account/validate-email', // nejasno ostaje kako radi i sa '/account/validateemail' bez crtice, verovatno je tako podesen regex koji razaznaje url-ove u osnovi MVC framework-a
+                        data: {
+                            ignore_id: function () { // prosledjujemo i userId pomocu js kako bi u metodi validateemail u Account controller bilo ignorisano to sto email vec postoji u bazi
+                                return userId;
+                            }
+                        }
+                    }
+                },
+                password: {
+                    minlength: 6,
+                    validPassword: true
+                },
+            },
+            messages: { // sets custom messages
+                email: {
+                    remote: 'email already taken' // custom message for the email verification
+                }
+            }
+        });
+        $('#inputPassword').hideShowPassword({ // kucica za prikazivanje passworda (radi koristeci gore ucitanu jquery skriptu)
+            show: false,
+            innerToggle: 'focus'
+        });
+    });
+</script>
+{% endblock %}
+
+{% block body %}
+
+<h1>Profile</h1>
+
+<!-- deo koji proverava da li postoje greske koje su prosledjene bekendu i ispisuje ih -->
+{% if user.errors is not empty %}
+<p>Errors:</p>
+<ul>{% for error in user.errors %}
+    <li>{{error}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+<form method="POST" action="/profile/update" id="formProfile">
+    <div class="form-group">
+        <label for="inputName">Name</label>
+        <!-- u value propertiju inputa pomocu twig-a mozemo da koristimo vrednost prosledjenog asocijativnog niza kako se ne bi moralo ponovo ukucavati celo ime ili email u drugom slucaju -->
+        <input id="inputName" class="form-control" name='name' placeholder="Name" value="{{ user.name }}" required />
+    </div>
+    <div class="form-group">
+        <label for="inputEmail">Email Address</label>
+        <input id="inputEmail" class="form-control" name='email' placeholder="email address" autofocus
+            value="{{ user.email }}" required type="email" />
+    </div>
+    <div class="form-group">
+        <label for="inputPassword">Password</label>
+        <input type="password" id="inputPassword" class="form-control" name='password' placeholder="Password"
+            autofocus />
+        <span class="help-block">Leave blank to keep your current password.</span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="/profile/show" class="btn btn-primary">Cancel</a>
+</form>
+
+{% endblock %}

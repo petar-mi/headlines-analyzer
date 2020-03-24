@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Our own stylesheet -->
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <!-- Bootstrap CDN link -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">   
+
+</head>
+
+<body style="background-color: black; color: white; 
+             background-image: linear-gradient( 89.7deg,  rgba(0,0,0,1) -10.7%, rgba(53,92,125,1) 88.8% );">
+    <!-- div klase container obuhvata ceo body i obavezan je za koristenje bootstrap-a -->
+    <div class="container-fluid">
+
+        <nav class="navbar navbar-expand-sm navbar-light bg-light">
+            <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent"> -->
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">Home</a>
+                    </li>
+                    <!-- deo koji se prikazuje samo ukoliko je user ulogovan -->
+                    {% if current_user %}
+                    <li class="nav-item"><a href="/profile/show" class="nav-link">Profile</a></li>
+                    <li class="nav-item"><a href="/logout" class="nav-link">Log out</a></li>
+                    {% endif %}
+                </ul>
+            <!-- </div> -->
+        </nav>
+        <!-- deo ispod je zakomentarisan jer se odnosi na prvi deo tutorijala -->
+        <!-- <nav>
+        <a href="/">Home</a>
+        <a href="/posts/index">Posts</a>
+    </nav> -->
+        {% for message in flash_messages %}
+        <div class='alert alert-{{ message.type }}' style="margin-top: 1em;">
+            {{ message.body }}
+        </div>
+        {% endfor %}
+
+        {% block body %}
+        {% endblock %}
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <!-- spoljasnje scripte (ovde jquery) ucitavamo na kraju body elementa, ali kod koji ce ih koristiti mora doci nakon toga (ovde je to footer template) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+    <!-- sledece dve su js deo potreban za bootstrap, (osim css-a koji je uvezen u head-u -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+    {% block footer %}
+    {% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Reset password{% endblock %}
+
+{% block footer %}
+
+<script src="/js/hideShowPassword.min.js"></script> <!-- jquery plugin skinut s neta koji pravi kucicu za prikazivanje passworda -->
+<script src="/js/app.js"></script> <!-- deo koji se bavi validacijom password-a u jquery-iju -->
+
+<script>
+        $(document).ready(function() {
+
+            /**
+             * Validate the form
+             */
+            $('#formPassword').validate({
+                rules: {
+                    password: {
+                        required: true,
+                        minlength: 6,
+                        validPassword: true
+                    }
+                }
+            });
+            $('#inputPassword').hideShowPassword({ // kucica za prikazivanje passworda (radi koristeci gore ucitanu jquery skriptu)
+                show: false,
+                innerToggle: 'focus'
+            });
+        });
+</script>
+{% endblock %}
+
+{% block body %}
+
+<h1>Reset password</h1>
+
+<!-- deo koji proverava da li postoje greske koje su prosledjene i ispisuje ih -->
+{% if user.errors is not empty %}
+    <p>Errors:</p>
+    <ul>{% for error in user.errors %}
+        <li>{{error}}</li>
+    {% endfor %}
+    </ul>
+{% endif %}    
+
+
+<form method="POST" id="formPassword" action="/password/reset-password">
+    <!-- sledeci je red je (za usera nevidljivi) input koji sluzi samo da prihvati vrednost token putem twig-a i onda ga preko forme posalje na adresu navedenu u action zaradi promene passworda: -->
+    <input type="hidden" name="token" value="{{ token }}" /> 
+    <div class="form-group">
+        <label for="inputPassword">Password</label>
+                <input type="password" id="inputPassword" class="form-control" name='password' placeholder="Password" autofocus required />
+    </div>
+
+    <button type="submit" class="btn btn-outline-dark">Reset password</button>
+</form>
+
+{% endblock %}

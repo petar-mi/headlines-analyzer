@@ -1,0 +1,14 @@
+{
+    "require": {
+        "twig/twig": "~1.0",
+        "phpmailer/phpmailer": "^6.1",
+        "kriswallsmith/buzz": "^1.0",
+        "nyholm/psr7": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Core\\": "Core/",
+            "App\\": "App/"
+        }
+    }
+}

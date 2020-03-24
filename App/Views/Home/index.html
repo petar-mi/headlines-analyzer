@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+
+<!-- zakomentarisani deo koji sledi je iz prvog tutorijala  -->
+<!-- <p>Hello from a Twig template, {{ name }}!</p>
+
+    <ul>
+        {% for colour in colours %}
+            <li>{{ colour }}</li>
+        {% endfor %}
+    </ul> -->
+<!-- deo koji se prikazuje samo ukoliko je user ulogovan -->
+{% if current_user %}
+<h3 style="margin-top: 20px; margin-bottom: 20px;">Welcome, {{ current_user.name }}.</h3>
+<p class="col-xl-5 col-lg-5 col-md-6 col-sm-9 col-12">This app allows you to browse through a collection of news headlines and see which words appear most frequently in them.
+   <br><br>Each word will be represented by the first image returned by Google image search. 
+   <br><br>User-specific analysing tool will also offer headline suggestions based on previous headline links visits.</p>
+<a href="/profile/showCollectedChoice" class="btn btn-primary">Show collected data</a>
+{% else %}
+<div style="margin-top: 20px;">
+    <a href="/login" class="btn btn-primary">Log in</a>
+    <a href="/signup/new" class="btn btn-primary">Sign up</a>
+</div>
+{% endif %}
+
+{% endblock %}

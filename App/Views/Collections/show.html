@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+
+{% block title %}Collection{% endblock %}
+
+{% block body %}
+
+
+<div id="keywordRefPopUpContainer" class="container" style="justify-content: center; display: none;"
+    onmouseover="mouse_out = false;" onmouseout="mouse_out = true">
+    <button id="keywordRefPopUpCloseButton" type="button" class="btn btn-primary" style="position: fixed; top: 350px; width: 38px; z-index: 1000;" onclick='this.parentElement.style.display = "none";return false'>X</button>
+    <div id="keywordRefPopUp" class="container"
+        style="height: 300px; width: 80%; z-index: 1000; background-color: rgba(52, 58, 64, 0.9); overflow: auto; position: fixed; top: 400px; ">
+    </div>
+</div>
+<div id="titleSuggestions" class="sticky-top"
+    style="overflow: hidden; display: block; height: 220px; background-color: rgba(52, 58, 64, 0.9); margin-bottom: 50px; margin-top: 20px; padding: 20px;">
+    <h4 style="color: white; margin-bottom: 20px;">You might be interested in:</h4>
+    {% for item in suggestedTitles %}
+    <p>
+        <a href="{{ item.url }}" class="suggested-titles" style="color: rgb(201, 198, 198);" target="_blank"
+            onclick="sendTitleToServer('{{ item.title }}')">{{ item.title }}</a>
+    </p>
+    {% endfor %}
+</div>
+
+<div class="masonry-with-columns-2" id="masonry-with-columns-2">
+    {% for key, value in keywordsArrayFromDb %}
+    <div id="{{ key }}_{{ loop.index0 }}" class="single-keyword-div" onclick="prikazi('{{ key }}')">
+        {% if value.url != "" %}
+        <img src="{{ value.url }}" style="display: block; margin-left: auto; margin-right: auto; top: 20%;"
+            alt="{{ key }} : {{ value.quantity }}">
+        <p style="position: relative; display: none;">{{ key }}</p>
+        {% else %}
+        {{ key }} : {{ value.quantity }}
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+
+<script>
+    let scrolled = false;
+    let mouse_out;
+
+    // check if element is in the viewport
+    var isInViewport = function (elem) {
+        var bounding = elem.getBoundingClientRect();
+        return (
+            bounding.top >= 0 &&
+            bounding.left >= 0 &&
+            bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    };
+
+    function preparePhotoRendering() {
+        console.log("1 Scroll event fired!");
+        let divsInViewportWithOutPhoto = [];
+        let divsWithOutPhoto = Array.from(document.getElementsByClassName("single-keyword-div")).filter(element => element.childElementCount == 0);
+        console.log("divsWithOutPhoto length: " + divsWithOutPhoto.length);
+        if (divsWithOutPhoto.length > 0) {
+            divsWithOutPhoto.forEach(element => {
+                if (isInViewport(element)) divsInViewportWithOutPhoto.push(element);
+            });
+            console.log("divsInViewportWithOutPhoto length: " + divsInViewportWithOutPhoto.length);
+            if (divsInViewportWithOutPhoto.length > 0) {
+                let indexToStartRendering = parseInt(divsInViewportWithOutPhoto[0].id.split("_")[1]);
+                let indexToEndRendering = parseInt(divsInViewportWithOutPhoto[divsInViewportWithOutPhoto.length - 1].id.split("_")[1]);
+                console.log(indexToStartRendering);
+                console.log(indexToEndRendering);
+                addPhotosToDOM(indexToStartRendering, indexToEndRendering);
+            } else {
+                if (scrolled == true) scrolled = false;
+            }
+        }
+    }
+
+    async function addPhotosToDOM(startIndex, stopIndex) {
+
+        for (let a = startIndex; a < stopIndex + 1; a++) {
+
+            let keyword = document.getElementsByClassName("single-keyword-div")[a].id.split("_")[0];
+
+            let img = document.createElement("IMG");
+
+            let req = `/collections/getSingleImageFromGoogle?key=${keyword}`;
+            let response = await fetch(req);
+            img.src = await response.text();
+            img.style.display = "block";
+            img.style.marginLeft = "auto";
+            img.style.marginRight = "auto";
+            img.style.top = "20%";
+            img.alt = document.getElementsByClassName("single-keyword-div")[a].innerText;
+            document.getElementsByClassName("single-keyword-div")[a].innerHTML = '';
+            document.getElementsByClassName("single-keyword-div")[a].id = keyword;
+
+
+            let keywordTitle = document.createElement("P");
+            keywordTitle.style.position = "relative";
+            keywordTitle.style.display = "none";
+
+            document.getElementsByClassName("single-keyword-div")[a].onmouseover = function () { setTimeout(() => keywordTitle.style.display = "block", 240); keywordTitle.className = "fade-in"; img.className = "image"; };
+            document.getElementsByClassName("single-keyword-div")[a].onmouseout = function () { setTimeout(() => keywordTitle.style.display = "none", 240); keywordTitle.className = "fade-out"; img.className = ""; };
+
+
+            let catchImageHeight = setInterval(() => {
+                console.log(keyword + " " + img.clientHeight);
+                if (img.clientHeight > 0) {
+                    keywordTitle.style.top = -(img.clientHeight / 2 + 11) + "px"; // after the image is rendered we can access its height property and vertically center the text over it (the correction of 11 is approx for the font size)
+                    clearInterval(catchImageHeight); // after the image is rendered interval is removed
+                }
+            }, 10);
+
+
+            setTimeout(function () { keywordTitle.innerText = keyword; }, 100); // wait for the image to be rendered first, then assign text on top of it (does not really matter anymore since text is display:none by default)
+
+            document.getElementsByClassName("single-keyword-div")[a].append(img);
+            document.getElementsByClassName("single-keyword-div")[a].append(keywordTitle);
+            if (a === stopIndex) scrolled = false;
+        }
+    }
+
+    async function sendTitleToServer(title) {
+        console.log(title);
+        let response2 = await fetch('/profile/collectUserInfo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body:
+                JSON.stringify({
+                    title: title,
+                    fromDate: "{{ fromDate }}",
+                    toDate: "{{ toDate }}"
+                })
+        });
+
+
+        // real-time suggestions update ↓↓↓
+        let arr = await response2.json();
+        console.log(arr);
+        let suggestions = document.getElementsByClassName("suggested-titles");
+        for (let x = 0; x < suggestions.length; x++) {
+            suggestions[x].innerText = arr[x].title;
+            suggestions[x].href = arr[x].url;
+            suggestions[x].onclick = () => sendTitleToServer(arr[x].title); // recursive function
+        }
+    }
+
+    async function prikazi(keyword) {
+
+        let logoBase64Arr = JSON.parse('{{ logoBase64Arr|json_encode|raw }}'); // makes JS object from twig array containg Base64 data needed to render logos
+        let req = `/collections/getKeywordReferences?key=${keyword}&fromDate={{ fromDate }}&toDate={{ toDate }}`;
+        let response = await fetch(req);
+        let responseArray = await response.json();
+        console.log(responseArray);
+
+        let popup = document.getElementById("keywordRefPopUp");
+        popup.innerHTML = '';
+
+        let table = document.createElement("TABLE");
+        table.className = "table table-hover";
+
+        for (let x = 0; x < responseArray.length; x++) {
+
+            let tableRow = document.createElement("TR");
+            tableRow.className = "row";
+            let websiteTableData = document.createElement("TD");
+            websiteTableData.className = "col-xs-2 col-sm-1";
+            websiteTableData.style.color = "white";
+            let dateTableData = document.createElement("TD");
+            dateTableData.className = "col-xs-2 col-sm-2";
+            dateTableData.style.color = "white";
+            dateTableData.style.textAlign = "center";
+            let titleTableData = document.createElement("TD");
+            titleTableData.className = "col-xs-8 col-sm-9";
+            let title = document.createElement("A");
+
+            let logo = document.createElement("IMG");
+            logo.src = logoBase64Arr[responseArray[x].website];
+            logo.style.minWidth = "50px";
+            logo.style.width = "120%";
+            
+            websiteTableData.append(logo);
+            //websiteTableData.innerText = responseArray[x].website;
+            
+         
+            dateTableData.innerText = responseArray[x].snapshot_date;
+            title.innerText = responseArray[x].title;
+            title.href = responseArray[x].url;
+            title.target = "_blank";
+            title.style.color = "rgb(128, 223, 255)";
+            title.onclick = () => sendTitleToServer(responseArray[x].title);
+            //title.onclick = function() { return myFunc()}; // isto sto i gornji red samo pisano bez arrow function
+
+        
+            titleTableData.append(title);
+
+            tableRow.append(websiteTableData);
+            tableRow.append(dateTableData);
+            tableRow.append(titleTableData);
+
+            table.append(tableRow);
+
+        }
+        popup.append(table);
+
+        document.getElementById("keywordRefPopUpContainer").style.display = "flex";
+        positionKeywordRefPopUpCloseButton();
+
+    }
+
+    async function afterLoad() {
+        
+        console.log("Already rendered:");
+        console.log("{{ alreadyRendered }}");
+        //console.log(document.getElementsByTagName("img")[0]).clientHeight;
+        for (c = 0; c < "{{ alreadyRendered }}"; c++) {
+            console.log("tu sam");
+            let paragraphTag = document.getElementsByTagName("img")[c].nextElementSibling;
+            let imageTag = document.getElementsByTagName("img")[c];
+            let parentDivTag = imageTag.parentElement;
+            // let catchImageHeight2 = setInterval(() => {
+            //     // console.log("ALREADY RENDERED HEIGHT: " + document.getElementsByTagName("img")[c].clientHeight);
+            //     // console.log("ALREADY RENDERED HEIGHT: " + document.getElementsByTagName("img")[c].offsetHeight);
+            //     if (imageTag) {
+            //         if (document.getElementsByTagName("img")[c].clientHeight > 0) {
+            //             // console.log(document.getElementsByTagName("img")[c]);
+            //             paragraphTag.style.top = -(imageTag.clientHeight / 2 + 7) + "px"; // after the image is rendered we can access its height property and vertically center the text over it (the correction of 7 is half of the font size of 14px)
+            //             paragraphTag.style.display = "block";
+            //             clearInterval(catchImageHeight2); // after the image is rendered interval is removed
+            //         }
+            //     }
+            // }, 10);
+            setTimeout(() => { // varijanta sa setInterval nije radila iz nekog razloga (kao da nije odradjivao clearInterval pa je ovde uzeto proizvoljno 100ms)
+                if (imageTag.clientHeight > 0) {
+                    paragraphTag.style.top = -(imageTag.clientHeight / 2 + 11) + "px";
+                    paragraphTag.style.display = "none";
+                    parentDivTag.onmouseover = function () { setTimeout(() => paragraphTag.style.display = "block", 240); paragraphTag.className = "fade-in"; imageTag.className = "image"; };
+                    parentDivTag.onmouseout = function () { setTimeout(() => paragraphTag.style.display = "none", 240); paragraphTag.className = "fade-out"; imageTag.className = ""; };
+                }
+            }, 100);
+        }
+
+        let turnedOff = false;
+
+        if (!turnedOff) {
+
+            preparePhotoRendering();
+
+
+            //     //for (let a = "{{ alreadyRendered }}"; a < document.getElementsByClassName("single-keyword-div").length; a++) {
+            //         //for (let a = 11; a < document.getElementsByClassName("single-keyword-div").length; a++) {
+            //         //let singleKeywordDiv = document.getElementsByClassName("single-keyword-div")[a];
+
+            //         if (isInViewport(document.getElementsByClassName("single-keyword-div")[parseInt("{{ alreadyRendered }}")])) {
+
+            //             addPhotosToDOM(parseInt("{{ alreadyRendered }}"));
+            //         } else {
+            //             //console.log("stopped at: " + document.getElementsByClassName("single-keyword-div")[a].innerText + "   :   " + a);
+            //         }
+            //     //}
+        }
+    }
+
+    function positionKeywordRefPopUpCloseButton() {
+        document.getElementById("keywordRefPopUpCloseButton").style.left = (parseInt(document.getElementById("keywordRefPopUp").getBoundingClientRect().right) - 38) + "px"; 
+    }
+
+    document.addEventListener('scroll', async () => {
+        if (!scrolled) {
+            scrolled = true;
+            return preparePhotoRendering();
+        }
+        //return scroll();
+    });
+    document.addEventListener("DOMContentLoaded", afterLoad); // loading additional photos 1by1 
+
+    window.addEventListener("resize", positionKeywordRefPopUpCloseButton);
+
+    document.onclick = () => {
+        if (mouse_out) {
+            //hideDiv(),   // hides mydiv
+
+            console.log(mouse_out);
+            document.getElementById("keywordRefPopUpContainer").style.display = "none";
+            //document.onclick = null; // disables next clicks on document
+        }
+    };
+
+</script>
+
+{% endblock %}

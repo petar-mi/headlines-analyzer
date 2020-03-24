@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Log in{% endblock %}
+
+{% block footer %}
+<script>
+    $(document).ready(function() {
+$.getJSON('https://ipapi.co/json/', function (data) {
+    document.getElementById('clientIp').value = data.ip;
+        });
+    })
+</script>
+{% endblock %}
+
+{% block body %}
+<h1>Log in</h1>
+
+<form action='/login/create' method="POST">
+    <div class="form-group">
+        <label for="inputEmail">Email address</label>
+        <input type="email" id="inputEmail" class="form-control" name="email" placeholder="Email address" autofocus value="{{ email }}" />
+    </div>
+    <div class="form-group">
+        <label for="inputPassword">Password</label>
+        <input type="password" id="inputPassword" class="form-control" name="password" placeholder="Password" />
+    </div>
+    <div class="checkbox">
+        <label>
+            <!-- da bi checkbox bio ucitan kao cekiran dovoljno je da samo poseduje atribut checked a to se pomocu tviga postize ovako: -->
+            <input type="checkbox" id="checkboxID" name="remember_me" {% if remember_me %} checked {% endif %}/> Remember me
+        </label>
+    </div>
+    <button type="submit" class="btn btn-primary" >Log in</button>
+
+    <a href="/password/forgot" class="btn btn-primary">Forgot password?</a>
+    <input type="hidden" name="ip" id="clientIp" /> 
+</form>
+
+{% endblock %}
+

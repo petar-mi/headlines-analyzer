@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+
+<h3 style="margin-top: 20px; margin-bottom: 20px;">Select websites</h3>
+<form id="form" action='/collections/show' method="POST">
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="noizz" id="checkboxNoizz">
+        <label class="form-check-label" for="checkboxNoizz">
+            Noizz.rs
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="mondo" id="checkboxMondo">
+        <label class="form-check-label" for="checkboxMondo">
+            Mondo.rs
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="luftika" id="checkboxLuftika">
+        <label class="form-check-label" for="checkboxLuftika">
+            Luftika.rs
+        </label>
+    </div>
+    <h3 style="margin-top: 20px; margin-bottom: 20px;">Select dates</h3>
+    <div class="form-group row">
+        <label for="from-date-input" class="col-4 col-xl-1 col-lg-2 col-md-3 col-form-label">From: </label>
+        <div class="col-8 col-xl-2 col-lg-3 col-md-4 col-sm-5">
+            <input class="form-control" type="date" id="from-date-input" name="from-date">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="to-date-input" class="col-4 col-xl-1 col-lg-2 col-md-3 col-form-label">To: </label>
+        <div class="col-8 col-xl-2 col-lg-3 col-md-4 col-sm-5">
+            <input class="form-control" type="date" id="to-date-input" name="to-date">
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" onclick="showSpinner()">Get data</button>
+</form>
+
+<div id="loader" style="display: none;"></div>
+
+<script>
+
+    function showSpinner() {
+        document.getElementById("loader").style.display = "block";
+    }
+</script>
+
+{% endblock %}
