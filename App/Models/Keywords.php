@@ -4,7 +4,7 @@ namespace App\Models;
 
 use PDO, PDOException;
 
-require_once("/opt/lampp/htdocs/Core/Model.php"); // mora da se uradi require rucno da bi radio cronjob
+require_once("/opt/lampp/htdocs/Core/Model.php"); // has to be required manually for cron to work
 
 class Keywords extends \Core\Model
 {
@@ -19,13 +19,13 @@ class Keywords extends \Core\Model
             $sql = 'INSERT INTO news_keywords (website, keywords)
                         VALUES (:website, :keywords)';
 
-            $db = static::getDB(); // posto class Post extends Model onda imamo ovakav poziv staticke metode bez navodjenja imena klase kojoj pripada
+            $db = static::getDB(); // since Post class extends Model we have this way of calling static method without naming the class it belongs to
             $stmt = $db->prepare($sql);
 
             $stmt->bindValue(':website', $website, PDO::PARAM_STR);
             $stmt->bindValue(':keywords', $keywords, PDO::PARAM_STR);
 
-            return $stmt->execute(); // ujedno izvrsava snimanje u bazu ali i vraca true ako je uspelo i false ukoliko nije
+            return $stmt->execute(); // saves to db and at the same time returns true if it was a success (and false if it failed)
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
@@ -39,7 +39,7 @@ class Keywords extends \Core\Model
             $sql = 'INSERT INTO news_titles_and_urls (website, title, url)
                         VALUES (:website, :title, :url)';
 
-            $db = static::getDB(); // posto class Post extends Model onda imamo ovakav poziv staticke metode bez navodjenja imena klase kojoj pripada
+            $db = static::getDB(); // since Post class extends Model we have this way of calling a static method without naming the class it belongs to
             $stmt = $db->prepare($sql);
 
             $stmt->bindValue(':website', $website, PDO::PARAM_STR);
@@ -47,7 +47,7 @@ class Keywords extends \Core\Model
             $stmt->bindValue(':url', $url, PDO::PARAM_STR);
 
 
-            return $stmt->execute(); // ujedno izvrsava snimanje u bazu ali i vraca true ako je uspelo i false ukoliko nije
+            return $stmt->execute(); // since Post class extends Model we have this way of calling s static method without naming the class it belongs to
         } catch (PDOException $e) {
             //echo $e->getMessage();
         }
@@ -66,7 +66,7 @@ class Keywords extends \Core\Model
 
         for ($a = 0; $a < count($websites); $a++) {
             if ($a < count($websites) - 1) {
-                $sqlSuffix .= ' website = :' . $a . " OR"; // morali su da se stave brojevi ($a) umesto stringova ($websites[$a]) zato sto tacka u stringu pravi problem
+                $sqlSuffix .= ' website = :' . $a . " OR"; // had to be numbers ($a) instead of strings ($websites[$a]) because dot (.) in a string was making a problem
             } else {
                 $sqlSuffix .= ' website = :' . $a;
             }
@@ -82,7 +82,7 @@ class Keywords extends \Core\Model
         }
 
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_COLUMN, 2); // fetch() vraca false ako nije pronadjeno nista u bazi
+        return $stmt->fetchAll(PDO::FETCH_COLUMN, 2); // fetch() returns false if nothing was found in db
     }
 
     public static function findByKeyword($keyword, $fromDate, $toDate)
@@ -108,22 +108,21 @@ class Keywords extends \Core\Model
         //         WHERE title LIKE '%$keyword%'";
         //         AND snapshot_date BETWEEN '2020-03-01' AND '9999-12-31'";
 
-        // pomocu RLIKE mogu se koristiti regex izrazi, ovo npr vraca sve substringove "ljudi" koji se nalaze na kraju stringa
+        // with RLIKE it is possible to use regex, here fow example it returns all substrings "ljudi" that are found at the end of a string
         // $sql = "SELECT * FROM news_titles_and_urls 
         //         WHERE title RLIKE 'ljudi$'";
 
         $db = static::getDB();
         $stmt = $db->prepare($sql);
 
-        //$stmt->bindValue(':keyword', $keyword, PDO::PARAM_STR); // razlika izmedju bindValue i bindParam je sto bindParam salje vrednost tek u trenutku izvrsavanja $stmt->execute()
         $stmt->bindParam(':fromDate', $fromDate, PDO::PARAM_STR);
         $stmt->bindParam(':toDate', $toDate, PDO::PARAM_STR);
         $stmt->execute();
-        return $stmt->fetchAll(); // fetch() vraca false ako nije pronadjeno nista u bazi
+        return $stmt->fetchAll(); // fetch() returns false if nothing was found in db
     }
 
     public static function findTitleByWebsite($website, $fromDate, $toDate)
-    {   // treba nam samo title zaradi poredjenja sa trenutnim naslovima
+    {   // we only need title to compare it to current titles
         $sql = "SELECT title FROM news_titles_and_urls 
                 WHERE website = :website
                 AND snapshot_date BETWEEN :fromDate AND :toDate";
@@ -131,10 +130,10 @@ class Keywords extends \Core\Model
         $db = static::getDB();
         $stmt = $db->prepare($sql);
 
-        $stmt->bindValue(':website', $website, PDO::PARAM_STR); // razlika izmedju bindValue i bindParam je sto bindParam salje vrednost tek u trenutku izvrsavanja $stmt->execute()
+        $stmt->bindValue(':website', $website, PDO::PARAM_STR); // difference between bindValue and bindParam is that bindParam sends a value in the very moment of executing $stmt->execute()
         $stmt->bindValue(':fromDate', $fromDate, PDO::PARAM_STR);
         $stmt->bindValue(':toDate', $toDate, PDO::PARAM_STR);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_COLUMN, 0); // argument PDO::FETCH_COLUMN, 0 uzima prvu kolonu i od nje pravi indexed umesto associative array (key "title" biva izostavljen)
+        return $stmt->fetchAll(PDO::FETCH_COLUMN, 0); // argument PDO::FETCH_COLUMN, 0 takes 1st column and makes indexed instead of associative array (key "title" is excluded)
     }
 }

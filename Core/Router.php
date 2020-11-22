@@ -8,7 +8,7 @@ class Router
     protected $routes = []; // associative array of routes (routing table)
     protected $params = []; // to save the parameters from the matched route
 
-    public function add($route, $params = []) // ukoliko se navede vrednost paramatera (kao sto je navedeno ovde za $params) onda to postaje opcioni arg/param koji se moze i ne mora proslediti
+    public function add($route, $params = []) // if a value is provided a parameter becomes optional (2nd parameter here)
     {
         $route = preg_replace('/\//', '\\/', $route); // convert the route to a regex: escape forward slashes
         //echo "<p>";
@@ -27,8 +27,8 @@ class Router
         //echo "<div>";
         //echo htmlspecialchars($route);
         //echo "</div>";
-        $this->routes[$route] = $params; // add a route to the routing table, keys u nizu imaju vrednost $route, a value za svaki od tih keys je prazan niz
-        // taj prazan niz bice populisan params-ima tek nakon sto bude uporedjena unesena url adresa sa regex-om iz routing table-a
+        $this->routes[$route] = $params; // add a route to the routing table, keys in the array have have a value of $route, and value for each of those keys is an empty array
+        // that empty array will be populated with params only after the request url is compared to regex from routing table
         // echo "<br />";
         // echo "<br />";
         // echo "<div>";
@@ -41,12 +41,12 @@ class Router
     {
         return $this->routes;
     }
-    public function match($url) // prima unesenu url adresu kao parametar
+    public function match($url) 
     {
         // simple matching the url string to the routes in the routing table, setting the $params property if a route is found
         // foreach ($this->routes as $route => $params) {
         //     if ($url == $route) {
-        //         return $this->params = $params; // setuje vrednost propertija $params i samim tim vraca true
+        //         return $this->params = $params; // sets the value of the $params property so that it returns true
         //     }
         // }
 
@@ -54,33 +54,31 @@ class Router
         foreach ($this->routes as $route => $params) {
             // echo "ispitujem: " . htmlspecialchars($route);
             // echo "<br />";
-            if (preg_match($route, $url, $matches)) { // ispituje da li postoje poklapanja unetog url-a sa keys-ovima niza $this->routes koji su zapravo regexi
+            if (preg_match($route, $url, $matches)) { // evaluates if there are matches between requested url and and keys from $this->routes array that are actally regexes
 
-                foreach ($matches as $key => $match) { // izlistava poklapanja, gde je $key named captured group iz regexa, a $match deo url-a
+                foreach ($matches as $key => $match) { // iterates mathes where $key is named captured group from regex, a $match is part of url
                     // echo "<br />";
                     // echo "key= " . $key . "    " . "match= " . $match;
                     // echo "<br />";
                     if (is_string($key)) {
-                        $params[$key] = $match; // dodaje matcheve u asoc. niz pod keys-om koji ima vrednost named captured group-a iz regexa
+                        $params[$key] = $match; // adds matches to asoc. array under keys that have a value of a named captured group from regexa
                         // echo "<br />";
                         // var_dump($params);
                         // echo "<br />";
                     }
                 }
-                // *** VAZNO (sledeci red!) ***
-                // $this->routes[$route] = $params; // ovo je deo koji sam ja dodao jer trebalo bi da se niz parametara dodaju u niz $this->routes kao vrednost za odgovarajuci key, a ne u zaseban niz $this->params 
-
+               
                 // echo "<div>";
                 // echo "<pre>";
                 // echo htmlspecialchars(var_dump($this->routes));
                 // echo "</pre>";
                 // echo "</div>";
 
-                $this->params = $params; // dodaje asoc. niz $params (koji je vrednost u nizu $routes) u zaseban niz $params
-                return true; // vraca true u index.php ne bi li se ispisale rute, izvorno je u redu iznad pisalo: return $this->params = $params; tako da ovaj red nije bio potreban, ali to je bilo pomalo zbunjujuce
+                $this->params = $params; // adds asoc. array $params (which is a value in $routes array) to a separate $params array
+                return true; // returns true to index.php
             } else {
                 // echo "<br />";
-                // echo "Nije pronadjen match za ispitivanu rutu!";
+                // echo "A match for the requested route has not been found!";
                 // echo "<br />";
             }
         }
@@ -103,27 +101,28 @@ class Router
     {
         //echo "<p>";
         //echo "<pre>";
-        // echo htmlspecialchars(print_r($_GET, true)) . '</pre></p>'; // query parametri su dostupni sve vreme nezavisno od toga da li smo pozvali funkciju koja cisti query parametre (ona sluzi samo da bi router detektovao kontroler i akciju)
-        $url = $this->removeQueryStringVariables($url); // poziva funkciju koja uklanja query string sa kraja url-a (ako postoji) kako bi se detektovali kontroler i akcija
+        // echo htmlspecialchars(print_r($_GET, true)) . '</pre></p>'; // query params are available all the time unrelated to calling the function that clears query parama 
+                                                                       // (that function only servs for the router to detects controller and action)
+        $url = $this->removeQueryStringVariables($url); // removes query string from the end of url (if it exists) for the controller and action to be detected
 
         if ($this->match($url)) {
             $controller = $this->params['controller'];
             $controller = $this->convertToStudlyCaps($controller);
             // $controller = "App\Controllers\\$controller"; // hardcoded controller namespace
-            $controller = $this->getNamespace() . $controller; // poziva se funkcija koja odredjuje namespace u zavisnosti od parametara url-a i mathcing table routes-a
+            $controller = $this->getNamespace() . $controller; // function that sets sets a nemaspace according to params in url and mathcing table routes
 
             if (class_exists($controller)) {
                 // echo "<br />";
                 // echo $controller;
                 // echo "<br />";
-                $controller_object = new $controller($this->params); // instancira se objekat klase Posts i prosledjuju mu se route parametri (zato sto kroz konstruktor apstraktne parent klase (Controller) prima to kao argument)
+                $controller_object = new $controller($this->params); // Posts class obj is instanteated and route params are passed to it (receives this as an arg through a contstructor of the abstract Controller parent class)
                 $action = $this->params['action'];
                 $action = $this->convertToCamelCase($action);
 
-                if (preg_match('/action$/i', $action) == 0) { // pretrazuje da li action dobijen iz url-a sadrzi rec action 
-                    $controller_object->$action(); // ukoliko ne sadrzi poziva metod 
-                } else { // drugo resenje bilo bi da smo action metode u klasama odredili kao private pa im se ne bi moglo pristupiti spolja
-                    throw new \Exception("Method $action in controller $controller cannot be called directly - remove the Action suffix to call this method"); // baca gresku ako pokusamo da direktno pristupimo metodi
+                if (preg_match('/action$/i', $action) == 0) { // checks if the action received from the url contains the strign 'action' 
+                    $controller_object->$action(); // if it does not it calls a method 
+                } else { // the other solution would be to set the action methods in classes as private so they could not be accessed from the outside
+                    throw new \Exception("Method $action in controller $controller cannot be called directly - remove the Action suffix to call this method"); // throws an exception if we try to directly acces the method
                 }
             } else {
                 // echo "Controller class $controller not found";
@@ -131,7 +130,7 @@ class Router
             }
         } else {
             // echo 'No route matched.';
-            throw new \Exception('No route matched.', 404); // drugi arg je status code 404 (page not found)
+            throw new \Exception('No route matched.', 404); // 2nd arg is status code 404 (page not found)
         }
     }
 
@@ -189,8 +188,8 @@ class Router
         if ($url != '') {
             $parts = explode('&', $url, 2);
 
-            if (strpos($parts[0], '=') === false) { // ne znam cemu tacno sluzi ovo ispitivanje, tj. ne vidim kako bi znak = zavrsio u prvom delu query stringa nakon izvrsene explode funkcije
-                $url = $parts[0];                   // osim ako neko ne bi kucao u query = ispred prvog znata pitanja... ovde se to kontrolise tako sto se izvrsava index akcija home controllera 
+            if (strpos($parts[0], '=') === false) { // don't see the point of this evaluation, ie I don't see how the eqution char = could end up in 1st part of the query string after the explode function was executed
+                $url = $parts[0];                   // only if someone would type = in a query before the first ? mark. Here it is controlled by executing index action of home controller
             } else {
                 $url = '';
             }
@@ -201,10 +200,10 @@ class Router
 
     protected function getNamespace()
     {
-        $namespace = 'App\Controllers\\'; // ovo je defaultni, pocetni namespace
+        $namespace = 'App\Controllers\\'; // this is default, starting namespace
 
-        if (array_key_exists('namespace', $this->params)) { // ukoliko postoji i parametar namespace dobijen iz url-a 
-            $namespace .= $this->params['namespace'] . '\\'; // nazivu namespace dodaje se i vrednost namespace parametra (ovde konkretno Admin) kako bi se pronasla action class u odgovarajucem folderu
+        if (array_key_exists('namespace', $this->params)) { // if namespace param exists retrieved from url 
+            $namespace .= $this->params['namespace'] . '\\'; // namespace parameter is added to the namespace (here it is Admin) so that the action class could be found in a specified namespace (folder)
         }
         return $namespace;
     }

@@ -4,10 +4,10 @@ namespace App\Controllers;
 
 use Core\Controller;
 use \Core\View;
-use \App\Models\User; // da ne bi moralo da se navodi ceo namespace kada se poziva metoda iz klase User
+use \App\Models\User; // we use "use" so that we wouldn't have to name the whole namespace each time
 use App\Auth;
 use App\Flash;
-// use App\Mail; koristeno samo za testiranje slanje maila Mail::send();
+// use App\Mail; // just for testing email sending service Mail::send();
 
 
 
@@ -20,7 +20,7 @@ class Login extends Controller
 
     public function createAction()
     {
-        $user = User::authenticate($_POST['email'], $_POST['password']);
+        $user = User::authenticate($_POST['email'], $_POST['password']); // first looks in the db based on email and then checks if the passwords (hashes) match, if not false is returned
 
         $ip = $_POST['ip'];
 
@@ -29,34 +29,36 @@ class Login extends Controller
         if ($user) {
             Auth::login($user, $remember_me);
 
-            // Mail::send(); // stavljeno samo da bi se isporbalo automatsko slanje mailova
+            // Mail::send(); // just for testing email sending service
 
-            Flash::addMessage("Login successful.\n Logged from: $ip "); // nema drugog arg za tip poruke jer je u Flash.php podeseno da po defaultu to success
+            Flash::addMessage("Login successful.\n Logged from: $ip "); // no 2nd arg (type of message) because in Flash.php type is set to success by default
             
-            $this->redirect(Auth::getReturnToPage()); // ako je pronadjen user u bazi tj. ako je izvrseno logovanje, vrsimo redirect na trazenu stranicu koja je prethodno memorisana u session file ili na homepage ako nije. isto sto i Controller::redirect('/');
+            $this->redirect(Auth::getReturnToPage()); // if the user has been found in db namely if logging-in was performed, we're redirecting to requested page which has been 
+                                                      // previously stored in a session file or if it wasn't we're redirecting to the homepage. same as Controller::redirect('/');
             
-        } else {
-            Flash::addMessage('Login unsuccessful, please try again', Flash::WARNING); // drugim arg prosledjujemo tip poruke
+        } else { // if ther's no user in db or password does not match one stored in db false is returned and we're loading login page again 
+            Flash::addMessage('Login unsuccessful, please try again', Flash::WARNING); // 2nd arg passes the type of flash message
 
             View::renderTemplate('Login/new.html', [
-                'email' => $_POST['email'], // prosledjujemo email i da li je odabrano da korisnik bude zapamcen kako ne bi morao da unosi ponove te informacije
+                'email' => $_POST['email'], // we're passing the email and whether the user opted to be remembered so the same date doesn't have to be reentered
                 'remember_me' => $remember_me
-            ]); // ako usera nema u bazi ponovo ucitavamo login stranicu
+            ]); 
         }
     }
 
-    public function destroyAction() // kod je kopiran iz php dokumentacije: https://www.php.net/manual/en/function.session-destroy.php
-    {                               // ovo je metod kojim izlogujemo korisnika
-        Auth::logout();
+    public function destroyAction() 
+    {                               
+        Auth::logout(); // method to log out user
 
-        $this->redirect('/login/show-logout-message'); // ovde smo morali da napravimo nov url request kako bi se generisao novi session sto omogucuje da se upise flash message 
-                                                       // da smo uspesno izlogovani, a sto ovde ne bi bilo moguce jer je prilikom Auth::logout() izvrsen session destroy i nema session file vise
+        $this->redirect('/login/show-logout-message'); // we had to make new url request so that new session would be generated which enables flash message to show 
+                                                       // that we've been logged-out successfully, and that we could not do without redirecting first because during Auth::logout() 
+                                                       // session destroy has been performed and there's no more session file 
     }
 
     public function showLogoutMessageAction()
     {
         Flash::addMessage('Logout successful');
 
-        $this->redirect('/'); // nakon sto je korisnik izlogovan vracamo se na homepage
+        $this->redirect('/'); // after the user has logged out we're redirecting to the homepage
     }
 }

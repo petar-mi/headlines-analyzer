@@ -19,16 +19,16 @@ class Post extends \Core\Model
      */
     public static function getAll()
     {
-        // $host = 'localhost';  // zakomentarisano jer je konektovanje na bazu prebaceno u Core\Model.php
+        // $host = 'localhost';  // commented out because connecting to db has been transfered to Core\Model.php
         // $dbname = 'mvc';
         // $username = 'root';
         // $password = '';
     
         try {
-            // $db = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", // // zakomentarisano jer je konektovanje na bazu prebaceno u Core\Model.php
+            // $db = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", // commented out because connecting to db has been transfered to Core\Model.php
             //               $username, $password);
 
-            $db = static::getDB(); // posto class Post extends Model onda imamo ovakav poziv staticke metode bez navodjenja imena klase kojoj pripada
+            $db = static::getDB(); // since Post class extends Model we have this way of calling a static method without naming the class it belongs to
 
             $stmt = $db->query('SELECT id, title, content FROM posts
                                 ORDER BY created_at');

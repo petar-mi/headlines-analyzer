@@ -18,11 +18,11 @@ class RememberedLogin extends \Core\Model
         $db = static::getDB();
         $stmt = $db->prepare($sql);
 
-        // moramo da bajndujemo vrednosti parametara requesta koji su prethodno sacuvani u User klasi za odgovarajuce placeholdere, tako se radi kada se koriste prepared statements
-        $stmt->bindParam(':token_hash', $token_hash, PDO::PARAM_STR); // ovde koristimo PDO::PARAM_INT umesto PDO::PARAM_STR jer id je u bazi sacuvan kao broj
-        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class()); // ovim cinimo da umesto niza sto je default bude napravljen objekat klase User sa podacima iz baze. Drugi argument pronalazi namespace za pozvanu klasu (User u ovom slucaju).
+        // we must bind requesta param values that were previously stored in User class to according placeholders (that is how prepared statements work)
+        $stmt->bindParam(':token_hash', $token_hash, PDO::PARAM_STR); // we use PDO::PARAM_INT instead of PDO::PARAM_STR because id was saved as an integer in db
+        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class()); // instead of an array (default) we we create an User class obj with data from db. 2nd arg finds a namespace for the called class (User in this case).
         $stmt->execute();
-        return $stmt->fetch(); // fetch() vraca false ako nije pronadjeno nista u bazi
+        return $stmt->fetch(); // fetch() returns false if nothing was found in db
     }
 
     public function getUser()
@@ -32,10 +32,10 @@ class RememberedLogin extends \Core\Model
 
     public function hasExpired()
     {
-        return strtotime($this->expires_at) < time(); // konvertujemo podatke o vremenu isticanja tokena iz baze koji dolaze u stringu u time i poredimo ih sa trenutnom time() vrednosti
+        return strtotime($this->expires_at) < time(); // we convert data token expiry time that come in string from db to time format and compare it with current time() value
     }
 
-    public function delete() // u bazi brisemo token koji smo dobili iz browser cookie-a kako bi bio moguc logout
+    public function delete() // to enable logout we erase from db the token that we got from the client browser cookie  
     {
         $sql = 'DELETE FROM remembered_logins
               WHERE token_hash = :token_hash';
@@ -43,8 +43,7 @@ class RememberedLogin extends \Core\Model
         $db = static::getDB();
         $stmt = $db->prepare($sql);
 
-        // moramo da bajndujemo vrednosti parametara requesta koji su prethodno sacuvani u User klasi za odgovarajuce placeholdere, tako se radi kada se koriste prepared statements
-        $stmt->bindValue(':token_hash', $this->token_hash, PDO::PARAM_STR); // ovde koristimo PDO::PARAM_INT umesto PDO::PARAM_STR jer id je u bazi sacuvan kao broj
+        $stmt->bindValue(':token_hash', $this->token_hash, PDO::PARAM_STR);
         $stmt->execute();
     }
 }

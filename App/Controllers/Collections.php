@@ -13,13 +13,13 @@ use App\Scrap;
 
 
 
-class Collections extends Authenticated // moramo biti ulogovani da bi smo videli stranicu za podesavanja profila
+class Collections extends Authenticated // we have to be logged-in to be able to see profile edit page
 {
     protected function before()
     {
-        parent::before(); // poziva metodu before() iz Authenticated klase koja zahteva da korisnik bude ulogovan
-        // bez parent::before() metoda before() iz klase Profile pregazila bi (overriding) metodu iz parent klase i ne bi bilo potrebno da korisnik bude ulogovan da bi se prikazao i editovao profil
-        $this->user = Auth::getUser(); // posto se u svakoj metodi u ovom, Profile.php controller-u pozivala Auth::getUser() metoda, na ovaj nacin ona se automatski izvrsava prilikom poziva bilo koje metode iz Profile.php
+        parent::before(); // calls before() method from Authenticated class that requires for user to be logged-in
+        // without parent::before() method before() from Profile class would override method from parent class & it wouldn't be needed for user to be logged-in to render and edit profile
+        $this->user = Auth::getUser(); // because in each method of this Profile.php controller Auth::getUser() method was called, this way it automatically executes when calling any of Profile.php methods
     }
 
     public function showAction()
@@ -61,29 +61,31 @@ class Collections extends Authenticated // moramo biti ulogovani da bi smo videl
 
                 $keywordsFromTitles = array();
 
+                // ****** THIS IS A CODE REPEATING ITSELF - COMPARE TO Profile.php collectUserInfoAction() function *************
+
                 foreach ($allTitles as $title) {
                     $keywordsFromTitles = array_merge($keywordsFromTitles, preg_split("/ |:|!|\?|\.|,|;|-|–|\"|\(|\)|\.\.\./", $title));
                 }
 
+                
                 $keywordsFromTitles = array_filter(
                     $keywordsFromTitles,
                     function ($arrayEntry) {
-                        //return !preg_match("/(?![.=$'€%-])\p{P}/u", $arrayEntry) && !is_numeric($arrayEntry); //  ovde je izbacivalo i interpunkciju, ali onda je izbacivalo i reci zajedno sa njima
-                        return !preg_match('/\d/', $arrayEntry); // izbacuje clanove niza koji sadrze brojevne vrednosti
+                        return !preg_match('/\d/', $arrayEntry); // returns only non-numeric array elements
                     }
                 );
 
                 foreach ($keywordsFromTitles as $keyword => $value) {
 
-                    $keywordsFromTitles[$keyword] = ucwords(strtolower($value)); // pretvara svaki clan niza u title case osim onih koji sadrze karaktere sa dijaktritickim znacima
-                    $keywordsFromTitles[$keyword] = preg_replace(Config::CHARS_TO_LOOK_FOR, Config::CHARS_TO_CHANGE, $keywordsFromTitles[$keyword]); // ispravlja reci sa dijakritickim znakovima tako sto svakog clan niza $karakteriZaPretragu pronadjenim u stringu pomocu regexa pretvara u odgovarajuci clan niza $karakteriZaZamenu
+                    $keywordsFromTitles[$keyword] = ucwords(strtolower($value)); // converts each array element to title case exept those that contain diacritical marks
+                    $keywordsFromTitles[$keyword] = preg_replace(Config::CHARS_TO_LOOK_FOR, Config::CHARS_TO_CHANGE, $keywordsFromTitles[$keyword]); // corrects words with diacritical marks by converting each Config::CHARS_TO_LOOK_FOR element found in a string using regex into appropriate Config::CHARS_TO_CHANGE element
 
                 }
 
-                $keywordsFromTitlesFiltered = array_diff($keywordsFromTitles, Config::EXCLUDE_WORDS); // vraca razliku skupova
+                $keywordsFromTitlesFiltered = array_diff($keywordsFromTitles, Config::EXCLUDE_WORDS); // returns the difference of arrays
 
                 $keywordsFromTitlesFilteredCounted = array();
-                foreach ($keywordsFromTitlesFiltered as $item) {  // ovo prebrojavanje je verovatno moglo da se uradi i pomocu ugradjene metode array_count_values(array)
+                foreach ($keywordsFromTitlesFiltered as $item) {  // could probably be done by built-in method array_count_values(array)
                     if (array_key_exists($item, $keywordsFromTitlesFilteredCounted)) {
                         $keywordsFromTitlesFilteredCounted[$item] += 1;
                     } else {
@@ -91,7 +93,11 @@ class Collections extends Authenticated // moramo biti ulogovani da bi smo videl
                     }
                 }
 
+                // ****** THE END OF CODE REPEATING ITSELF - COMPARE TO Profile.php collectUserInfoAction() function *************
+
+
                 arsort($keywordsFromTitlesFilteredCounted);
+
 
                 $keywordsFromTitlesFilteredCounted = array_slice($keywordsFromTitlesFilteredCounted, 0, 100); // cuts the array to the first 100 elements (keywords)
 
@@ -106,52 +112,7 @@ class Collections extends Authenticated // moramo biti ulogovani da bi smo videl
                     $counter++;
                 }
 
-                // ****************************
-
-                /*
-            $retrievedArr = Keywords::findByWebsite($websitesToQuery);
-
-            $keywordsArrayFromDb = array();
-            // foreach ($retrievedArr as $keywordsString) {
-            //     $keywordsArrayFromDb = array_merge($keywordsArrayFromDb, unserialize($keywordsString));
-            // }
-
-            foreach ($retrievedArr as $keywordsString) {
-                $keywordsArrayFromDb = array_merge_recursive($keywordsArrayFromDb, unserialize($keywordsString));
-            }
-
-            $keywordsArrayFromDbUniqueCounted = array();
-            // foreach ($keywordsArrayFromDb as $keyword => $count) {
-            //     if (array_key_exists($keyword, $keywordsArrayFromDbUniqueCounted)) {
-            //         $keywordsArrayFromDbUniqueCounted[$keyword] += $count;
-            //     } else {
-            //         $keywordsArrayFromDbUniqueCounted[$keyword] = $count;
-            //     }
-            // }
-
-            foreach ($keywordsArrayFromDb as $keyword => $value) {
-                if (is_array($value)) {
-                    $keywordsArrayFromDbUniqueCounted[$keyword] = array_sum($value);
-                } else {
-                    $keywordsArrayFromDbUniqueCounted[$keyword] = $value;
-                }
-            }
-
-            arsort($keywordsArrayFromDbUniqueCounted);     
-
-            $keywordsArrayFromDbUniqueCounted = array_slice($keywordsArrayFromDbUniqueCounted, 0, 50 ); // cuts the array to the first 50 elements (keywords)
-
-            $counter = 0;
-            $limit = 2;
-            foreach ($keywordsArrayFromDbUniqueCounted as $key => $value) {
-                if ($counter < $limit) {
-                    $keywordsArrayFromDbUniqueCounted[$key] = array("quantity" => $value, "url" => Scrap::getImageFromGoogle($key));
-                } else {
-                    $keywordsArrayFromDbUniqueCounted[$key] = array("quantity" => $value, "url" => "");
-                }
-                $counter++;
-            }
-*/
+                
                 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
                 // the following code repeats itself - compare to second part of profile/collectUserInfoAction 
                 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
@@ -208,7 +169,6 @@ class Collections extends Authenticated // moramo biti ulogovani da bi smo videl
                         // $totalResultingArr[$a]['containingKeywords'] = $containingKeywords; // just for testing
                     }
 
-                    //echo json_encode($totalResultingArr);
 
                     $totalResultingArrPositiveCounter = array();
                     foreach ($totalResultingArr as $innerArray) {
@@ -230,18 +190,9 @@ class Collections extends Authenticated // moramo biti ulogovani da bi smo videl
                     $totalResultingArrPositiveCounter = array_slice($totalResultingArrPositiveCounter, 0, 3); // cuts the array so that only first 6 elements remain
                 }
 
-                //echo json_encode($totalResultingArrPositiveCounter);
-                // * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
-                // * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
-
-                // $img_file = "/opt/lampp/htdocs/App/Images/luftika_logo.png";
-                // $imgData = base64_encode(file_get_contents($img_file));
-                // // Format the image SRC:  data:{mime};base64,{data};
-                // $src = 'data: ' . mime_content_type($img_file) . ';base64,' . $imgData;
 
                 View::renderTemplate('Collections/show.html', [
 
-                    //'keywordsArrayFromDb' => $keywordsArrayFromDbUniqueCounted,
                     'keywordsArrayFromDb' => $keywordsFromTitlesFilteredCounted,
                     'alreadyRendered' => $limit,
                     'suggestedTitles' => $totalResultingArrPositiveCounter,
@@ -267,9 +218,6 @@ class Collections extends Authenticated // moramo biti ulogovani da bi smo videl
         }
     }
 
-
-
-
     // consumed by /opt/lampp/htdocs/App/Views/Collections/show.html
     public function getSingleImageFromGoogleAction()
     {
@@ -278,6 +226,7 @@ class Collections extends Authenticated // moramo biti ulogovani da bi smo videl
             echo $imageUrl;
         }
     }
+
     // not clear if used anywhere!
     // public function getKeywordImage()
     // {
@@ -288,35 +237,4 @@ class Collections extends Authenticated // moramo biti ulogovani da bi smo videl
     //     }
     // }
 
-
-
-    /*public function editAction()
-    {
-        View::renderTemplate('Profile/edit.html', [
-            'user' => $this->user // prosledjujemo objekat korisnika, s obzirom da smo vec ulogovani
-        ]);                       // $this->user je definisan u before() funkciji gore
-    }
-
-    public function updateAction()
-    {
-        if($this->user->updateProfile($_POST)) { // $this->user je definisan u before() funkciji gore
-
-            Flash::addMessage('Changes saved');
-            $this->redirect('/profile/show'); 
-
-        } else { // ako nije prosla validacija ponovo prikazujemo formu za edit
-
-            View::renderTemplate('Profile/edit.html', [
-                'user' => $this->user // $this->user je definisan u before() funkciji gore
-            ]);
-        };
-    }
-
-    public function showCollectedAction() // *** akcija koju sam ja dodao ***
-    {
-        View::renderTemplate('Profile/showCollected.html', [
-            'user' => $this->user // prosledjujemo objekat korisnika, s obzirom da smo vec ulogovani
-        ]);                       // $this->user je definisan u before() funkciji gore
-    }
-    */
 }

@@ -14,34 +14,34 @@ class Password extends \Core\Controller
 
     public function requestResetAction()
     {
-        User::sendPasswordReset($_POST['email']); // prethodno nismo radili ni frontend ni backend validaciju jer nema nuzne potrebe za tim kada je email u pitanju, tek kada kasnije korisnik bude uneo novu sifru radimo validacije
-        View::renderTemplate('Password/reset_requested.html'); // samo prikazuje poruku da je zahtev prihvacen
+        User::sendPasswordReset($_POST['email']); // no need to do neither frontend nor backend validation because there is no need for that. Only after user enters a new password we will validate.
+        View::renderTemplate('Password/reset_requested.html'); // just shows that the request was accepted
     }
 
     public function resetAction()
     {
-        $token = $this->route_params['token']; // dostupnost hexadecimalnog tokena sa kraja url-a je omogucena dodavanjem posebne rute u index.php
+        $token = $this->route_params['token']; // availability of hexadecimal token from the end part of url was enabed by adding special route in index.php
         
         $user = $this->getUserOrExit($token);
         
-        View::renderTemplate('Password/reset.html', [ // izvrsava se samo ako je pronadjen user posto je inace izvrsen exit u metodi getUserOrExit
-                'token' => $token // prosledjuje se token u forntend putem twiga kako bi onda prilikom submitovanja forme za reset passworda bio poslat ovdasnjoj metodi resetPasswordAction() 
+        View::renderTemplate('Password/reset.html', [ // executes only if the user was found (otherwise we exit in getUserOrExit method)
+                'token' => $token // passing a token to the frontendusing twig which will then be sent to resetPasswordAction() method in this class after submitting the form 
         ]);
         
     }
 
     public function resetPasswordAction() 
     {
-        $token = $_POST['token']; // stiglo iz skrivenog input polja u formi za reset u frontendu
+        $token = $_POST['token']; // received from a hidden input field in frontend reset form 
 
-        $user = $this->getUserOrExit($token); // ponovo trazimo usera u bazi sa odgovarajucim tokenom
+        $user = $this->getUserOrExit($token); // looking for user in db passing a token
         
-        if ($user->resetPassword($_POST['password'])) { // true je ako izvrsena metoda rezultira nizom errors koji je prazan
+        if ($user->resetPassword($_POST['password'])) { // true if the method results in an empty errors array
             View::renderTemplate('Password/reset_success.html');
         } else {
             View::renderTemplate('Password/reset.html', [ 
                 'token' => $token,
-                'user'  => $user // ovaj put prosledjujemo i user objekat za ponovni pokusaj reseta
+                'user'  => $user // this time we pass user obj as well for another reset attempt
         ]);
         }
 
@@ -52,9 +52,11 @@ class Password extends \Core\Controller
         $user = User::findByPasswordReset($token);
         if($user){
             return $user;
-        } else { // u slucaju da je istekao token ili da nije ni pronadjen u bazi
+        } else { // in case the token has expired or was not found in db at all
             View::renderTemplate('Password/token_expired.html');
-            exit;
+            exit; // exit program normally terminating the execution of the script
+            // exit(); // same as just exit;
+            // exit(0); // same as just exit; if there was an error we pass an integer number 0-254 as an error code
         };
     }
 }

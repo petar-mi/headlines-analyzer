@@ -1,5 +1,5 @@
-// validacija passworda pomocu jquery-ija 
-// (poziva se iz: Views/Password/reset.html kao i iz: iews/Signup/new.html)
+// password validation using jquery 
+// (called from: Views/Password/reset.html as well as from: iews/Signup/new.html)
 
 $.validator.addMethod('validPassword',
 function(value, element, param) {

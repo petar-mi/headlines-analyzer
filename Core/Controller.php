@@ -31,15 +31,15 @@ abstract class Controller
      */
     public function __call($name, $args)
     {
-        $method = $name . 'Action'; // posto su metode u klasi preimenovane tako da sadrze Action sufiks one ne mogu biti izvrsene jer se ne poklapaju sa onim sto je dobijeno iz requesta kao action
-        // zbog toga se izvrsava ova __call metoda koja dodaje sufiks kako bi se te metode mogle izvrsiti, a imamo priliku da pre i posle pozivanja te akcije izvrsimo i neke dodatne metode
+        $method = $name . 'Action'; // since methods are named so that they contain Action suffix they cannot be executed since their name in client request does not have this suffix,
+        // that's why this __call method is executed which adds suffix Action, and at the same time we have an opportunity to execute additional code before and after this method
         if (method_exists($this, $method)) {
-            if ($this->before() !== false) { // ovo ispitivanje omogucava da posto je ovo pozivanje funkcije, ukoliko u funkciji vratimo false, nece se izvrsiti ni glavna metoda niti metoda after()
+            if ($this->before() !== false) { // if the called funct returns false, neither the main method or after() won't be executed
                 call_user_func_array([$this, $method], $args);
                 $this->after();
             }
         } else {
-            // echo "Method $method not found in controller " . get_class($this); // umesto da samo logujemo bacamo exception
+            // echo "Method $method not found in controller " . get_class($this); // just logging, but we're throwing an exception instead in the next line
             throw new \Exception("Method $method not found in controller " . get_class($this));
         }
     }
@@ -51,8 +51,8 @@ abstract class Controller
      */
     protected function before()
     {
-        // ako se ostavi ovako prazna, funkcija moze da se 'pregazi' istoimenom funkcijom u child class ali NE mora da se obavezno implementira i u child class
-        // ukoliko bi ovde bilo navdedeno kao abstract function before(); onda bi obavezno morala da se implementira u child class
+        // if left empty as it is, function could be overridden in a child class by the same name function, but the same name function DOES NOT necessarily need to be implemented in a child class
+        // if this function was defined as abstract then it WOULD HAVE to be implemented in a child class
     }
 
     /**
@@ -63,23 +63,22 @@ abstract class Controller
 
     protected function after()
     {
-        // ako se ostavi ovako prazna, funkcija moze da se 'pregazi' istoimenom funkcijom u child class ali NE mora da se obavezno implementira i u child class
-        // ukoliko bi ovde bilo navdedeno kao abstract function before(); onda bi obavezno morala da se implementira u child class
+        // if left empty as it is, function could be overridden in a child class by the same name function, but the same name function DOES NOT necessarily need to be implemented in a child class
+        // if this function was defined as abstract that it WOULD HAVE to be implemented in a child class
     }
 
     public function redirect($url)
     {
-        header('Location: http://' . $_SERVER['HTTP_HOST'] . $url, true, 303); // drugi (true) i treci (303) argument se valja staviti u ovom slucaju, ako se izostavi, bice 302 po deafultu
+        header('Location: http://' . $_SERVER['HTTP_HOST'] . $url, true, 303); // 2nd (true) and 3rd (303) argument should be placed, if missing it would be 302 by deafult
         exit;
     }
 
     public function requireLogin()
     {
-        if (!Auth::getUser()) { // proverava da li je korisnik ulogovan
-            Flash::addMessage('Please login to access that page', Flash::INFO); // drugim arg prosledjujemo tip poruke
-            Auth::rememberRequestedPage(); // pre preusmeravanja belezimo trazeni url u session file
-            // uncomment next line for tutorial code to work!
-            $this->redirect('/login'); // ukoliko nije ulogovan korisnik se preusmerava na stranicu za logovanje
+        if (!Auth::getUser()) { // checks if the user is logged in
+            Flash::addMessage('Please login to access that page', Flash::INFO); // we're passing the type of flash message through 2nd argument
+            Auth::rememberRequestedPage(); // before redirecting we're saving the requested url to session file
+            $this->redirect('/login'); // if not logged-in user is redirected to login page
         }
     }
 }

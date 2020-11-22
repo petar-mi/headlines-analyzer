@@ -108,7 +108,7 @@ body {
     animation-duration: 0.2s;
     } */
   
-/* deo koji sledi je zakomentarisan jer bootstrap imao istoimene alert klase koje hendluju flash messages*/
+/* the following code is commented-out because bootstrap had alert classes with same names that handle flash messages*/
 /* .alert {
     border: 1px solid #ccc;
     padding: 6px;

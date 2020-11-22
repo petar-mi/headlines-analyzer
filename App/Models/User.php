@@ -16,42 +16,42 @@ class User extends \Core\Model
 {
     public $errors = [];
 
-    public function __construct($data = []) // izvrsava se kada se instancira novi $user objekat u Signup.php 
-    // dajuci mu vrednost praznog niza nacinili smo argument opcionalnim jer kada se kreira objekat prilikom sign up-a prosledjuju se podaci, a kada se kreira prilikom login-a iz baze onda nema argumenta
+    public function __construct($data = []) // executes when new user object is instatiated in Signup.php 
+    // by setting the value of the argument to an empty array we've made the arg optional, because new user object is instatiated in Signup.php data are passed, and when it is created during login from the db there are no data here and the array stays empty
     {
-        foreach ($data as $key => $value) { // iterira objekat koji sadrzi parametre pretrage kao asocijativni niz key-value pairs 
-            $this->$key = $value; // i memorise ih kao propertije klase User
+        foreach ($data as $key => $value) { // iterates through the object that contains request params as associative key-value pairs 
+            $this->$key = $value; // and memorizes them as properties of the User class
         };
     }
     public function save()
     {
-        // $host = 'localhost';  // zakomentarisano jer je konektovanje na bazu prebaceno u Core\Model.php
+        // $host = 'localhost';  // commented out because connecting to db has been transfered to Core\Model.php
         // $dbname = 'mvc';
         // $username = 'root';
         // $password = '';
 
-        $this->validate(); // prvo validiramo korisnicki unos
+        $this->validate(); // 1st we're validating user input
 
-        if (empty($this->errors)) { // snimamo samo ukoliko nisu zabelezene greske 
+        if (empty($this->errors)) { // we're only saving to db if there are no errors 
             try {
 
-                $password_hash = password_hash($this->password, PASSWORD_DEFAULT); // stvaramo password hash koji automatski dodaje i salt i to ce biti vrednost koju cemo cuvati na serveru
-                $token = new Token();
-                $hashed_token = $token->getHash(); // u bazi cuvamo samo hash-ovan token
-                $this->activation_token = $token->getValue(); // token potreban za aktivaciju naloga koji ce biti poslat putem email-a ovde moramo uciniti da postane properti klase User (da bi se mogao koristiti iz metode sendActivationEmail() )
+                $password_hash = password_hash($this->password, PASSWORD_DEFAULT); // we're creating a password hash that automatically adds unique salt and that would be the value we're going to store in db
+                $token = new Token(); // creating  a token only for account activation purpose
+                $hashed_token = $token->getHash(); // we're only storing hashed token in the db (after activation the value of the hashed token in db will be set to null in activate method of this class)
+                $this->activation_token = $token->getValue(); // token needed to activate the account will be sent by email and here we're making it a User class property (so that it could be used from sendActivationEmail() method)
                 $sql = 'INSERT INTO users (name, email, password_hash, activation_hash)
-                        VALUES (:name, :email, :password_hash, :activation_hash)'; // ovde stavljamo placeholdere koji se oznacavaju sa : ispred, jer cemo koristiti prepared statements
+                        VALUES (:name, :email, :password_hash, :activation_hash)'; // here we're puttinf the placeholders marked by : preffix, because we're gonna be using prepared statements
 
-                $db = static::getDB(); // posto class Post extends Model onda imamo ovakav poziv staticke metode bez navodjenja imena klase kojoj pripada
+                $db = static::getDB(); // since Post class extends Model class we have this way of calling a static method without naming the class it belongs to
                 $stmt = $db->prepare($sql);
 
-                // moramo da bajndujemo vrednosti parametara requesta koji su prethodno sacuvani u User klasi za odgovarajuce placeholdere, tako se radi kada se koriste prepared statements
+                // we have to bind request parameters values that were previously stored in a User class for corresponding placeholders (has to be done when using prepared statements)
                 $stmt->bindValue(':name', $this->name, PDO::PARAM_STR);
                 $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
                 $stmt->bindValue(':password_hash', $password_hash, PDO::PARAM_STR);
                 $stmt->bindValue(':activation_hash', $hashed_token, PDO::PARAM_STR);
 
-                return $stmt->execute(); // ujedno izvrsava snimanje u bazu ali i vraca true ako je uspelo i false ukoliko nije
+                return $stmt->execute(); // at the same time saves to db and returns true if it was a success and false if it fails
             } catch (PDOException $e) {
                 echo $e->getMessage();
             }
@@ -66,10 +66,10 @@ class User extends \Core\Model
         if (filter_var($this->email, FILTER_VALIDATE_EMAIL) === false) { // email
             $this->errors[] = 'Invalid email';
         }
-        if (static::emailExists($this->email, $this->id ?? null)) { // drugi argument se salje samo ukoliko postoji, tj. ukoliko korisnik vec postoji u bazi (za slucaj kada se radi samo o promeni sifre)
+        if (static::emailExists($this->email, $this->id ?? null)) { // 2nd argument is sent only if it exists, namely if user already exists in a db (which is the case if the user is only changing a password)
             $this->errors[] = 'Email already taken';
         }
-        if (isset($this->password)) { // da ne  validira password ukoliko se radi o editovanju profila bez unosenja nove sifre
+        if (isset($this->password)) { // password is not validated if it is only profile edit without password change
 
             if (strlen($this->password) <= 6) { // pass lenght
                 $this->errors[] = 'Please enter at least 6 characters for the password';
@@ -83,79 +83,76 @@ class User extends \Core\Model
         }
     }
 
-    public static function emailExists($email, $ignore_id = null) // proverava da li vec postoji korisnik sa istim email-om, drugi parametar je opcionalan za slucajeve da se metod poziva prilikom promene samo sifre ili editovanja profila i predstavlja userid koji cemo ignorisati ako vec postoji
+    public static function emailExists($email, $ignore_id = null) // checks for a user with the same e-mail, 2nd param is optional for password changing/profile editing in which case there would be an already existing user id 
     {
         $user = static::findByEmail($email);
         if ($user) {
             if ($user->id != $ignore_id) {
-                return true; // vraca true samo ako email postoji u bazi i pri tom se razlikuje od $ignore_id (jer u tom slucaju se radi samo o promeni sifre za vec postojeceg korisnika) 
+                return true; // returns true only if email already exists in db and its user id differs from $ignore_id (in that case it is only about password changing or profile editing for an existing user) 
             }
         }
         return false;
     }
 
-    public static function findByEmail($email) // proverava da li vec postoji korisnik sa istim email-om
+    public static function findByEmail($email) // checks for a user providing an email 
     {
         $sql = 'SELECT * FROM users WHERE email = :email';
 
         $db = static::getDB();
         $stmt = $db->prepare($sql);
 
-        // moramo da bajndujemo vrednosti parametara requesta koji su prethodno sacuvani u User klasi za odgovarajuce placeholdere, tako se radi kada se koriste prepared statements
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR); // razlika izmedju bindValue i bindParam je sto bindParam salje vrednost tek u trenutku izvrsavanja $stmt->execute()
-        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class()); // ovim cinimo da umesto niza sto je default bude napravljen objekat klase User sa podacima iz baze. Drugi argument pronalazi namespace za pozvanu klasu (User u ovom slucaju).
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR); // bindValue & bindParam differnce is that bindParam sends a value just at the moment of executing $stmt->execute()
+        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class()); // instead of an array which is deafult the result will be an object of the User class populated by the data from db. 2nd param finds a namespace for the called class (User in this case).
         $stmt->execute();
-        return $stmt->fetch(); // fetch() vraca false ako nije pronadjeno nista u bazi
+        return $stmt->fetch(); // fetch() returns false if nothing was found in the db
     }
 
     public static function authenticate($email, $password)
     {
         $user = static::findByEmail($email);
-        if ($user && $user->is_active) { // proverava i bool is_active koji je deo user recorda u bazi da vidi da li je nalog aktiviran posto je po defaultu prilikom kreiranja recorda u bazi setovan na 0 tj. false
-            if (password_verify($password, $user->password_hash)) { // kada poredimo sa hashovanom sifrom u bazi koristimo password_verify umesto password_hash metodu
+        if ($user && $user->is_active) { // also checks is_active bool which is part of the user record in db to see if the user account is activated since it has by default been set to 0 (false) at the moment of creation of user record
+            if (password_verify($password, $user->password_hash)) { // when comparing with hashed password stored in db we use password_verify instead of password_hash method
                 return $user;
             }
         }
         return false;
     }
 
-    public static function findByID($id)  // upit u bazu na osnovu user_id-a dobijenog prilikom prvog upita tj. prilikom logovanja
+    public static function findByID($id)  // request to db providing user_id that was retrieved on login
     {
         $sql = 'SELECT * FROM users WHERE id = :id';
 
         $db = static::getDB();
         $stmt = $db->prepare($sql);
 
-        // moramo da bajndujemo vrednosti parametara requesta koji su prethodno sacuvani u User klasi za odgovarajuce placeholdere, tako se radi kada se koriste prepared statements
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT); // ovde koristimo PDO::PARAM_INT umesto PDO::PARAM_STR jer id je u bazi sacuvan kao broj
-        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class()); // ovim cinimo da umesto niza sto je default bude napravljen objekat klase User sa podacima iz baze. Drugi argument pronalazi namespace za pozvanu klasu (User u ovom slucaju).
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT); // we're using PDO::PARAM_INT instead PDO::PARAM_STR because id is stored as a integer in db
+        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class()); // instead of an array which is deafult the result will be an object of the User class populated by the data from db. 2nd param finds a namespace for the called class (User in this case).
         $stmt->execute();
-        return $stmt->fetch(); // fetch() vraca false ako nije pronadjeno nista u bazi
+        return $stmt->fetch(); // fetch() returns false if nothing was found in the db
     }
 
-    public function rememberLogin() // snimanje session tokena u bazu ukoliko je korisnik odabrao remember me opciju prilikom logovanja
+    public function rememberLogin() // saving session token in db if user opted for "remember me" when logging
     {
         $token = new Token();
         $hashed_token = $token->getHash();
-        $this->remember_token = $token->getValue(); // moramo da ga memorisemo kao properti klase User (tako sto stavljamo $this) kako bi nam bio dostupan i iz Auth.php
+        $this->remember_token = $token->getValue(); // we're storing token value as a User class property as well (by using $this) so that we can access it from Auth.php
         $this->expiry_timestamp = time() + 60 * 60 * 24 * 30; // 30 days from now
 
         $sql = 'INSERT INTO remembered_logins (token_hash, user_id, expires_at) 
-                VALUES (:token_hash, :user_id, :expires_at)'; // snima se u zasebnu tabelu remembered_logins zato sto je moguce da ce se cookies setovati na razlicitim uredjajima za istog korisnika
+                VALUES (:token_hash, :user_id, :expires_at)'; // saving to separate table remembered_logins because it is possible that cookies will be set on different devices for the same user
 
         $db = static::getDB();
         $stmt = $db->prepare($sql);
 
         $stmt->bindValue(':token_hash', $hashed_token, PDO::PARAM_STR);
         $stmt->bindValue(':user_id', $this->id, PDO::PARAM_INT);
-        $stmt->bindValue(':expires_at', date('Y-m-d H:i:s', $this->expiry_timestamp), PDO::PARAM_STR); // za snimanje u sql timpestamp se mora konvertovati u datum u ovom obliku
+        $stmt->bindValue(':expires_at', date('Y-m-d H:i:s', $this->expiry_timestamp), PDO::PARAM_STR); // timestamp must be converted in this way to be stored in sql
 
         return $stmt->execute();
     }
 
     public static function sendPasswordReset($email)
-    {
-        $user = static::findByEmail($email);
+    {        $user = static::findByEmail($email);
         if ($user) {
             if ($user->startPasswordReset()) {
                 $user->sendPasswordResetEmail();
@@ -166,14 +163,14 @@ class User extends \Core\Model
     protected function startPasswordReset()
     {
         $token = new Token();
-        $this->password_reset_token = $token->getValue(); // da bi kao obj property bilo dostupno i dole u sendPasswordResetEmail() salje se korisniku putem mail-a
-        $hashed_token = $token->getHash(); // u bazi cuvamo samo ovu hashovanu verziju tokena
+        $this->password_reset_token = $token->getValue(); // stored as an User object property so to be available in sendPasswordResetEmail() and sent to the user via email
+        $hashed_token = $token->getHash(); // we're only storing hashed token in the db
         $expiry_timestamp = time() + 60 * 60 * 2; // 2hr from now
 
         $sql = 'UPDATE users
                SET password_reset_hash = :token_hash,
                    password_reset_expires_at = :expires_at
-               WHERE id = :id'; // useru prethodno identifikovanom po poslatom mailu popunjava i polja u kojima se cuva pass reset hashed token i vreme njegovog isticanja
+               WHERE id = :id'; // saves additional data to user record (user was previously identified by email) - pass reset hashed token and expiry time
 
         $db = static::getDB();
         $stmt = $db->prepare($sql);
@@ -187,52 +184,52 @@ class User extends \Core\Model
 
     protected function sendPasswordResetEmail()
     {
-        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/password/reset/' . $this->password_reset_token; // kreiramo url koji cemo poslati korisniku na mail i koji ce imate otprilike ovakav izgled :
+        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/password/reset/' . $this->password_reset_token; // creating url to be sent to the user via email and that would have a form similar to this:
         // http://localhost/password/reset/4523ade1ef20c01fe7cd35c318db45dd
-        // sledeca dva reda su zakomentarisani, jer to je (legitiman) hardcoded nacin, ali mi smo posle upotrebili twig template i View klasu za kreiranje teksta i html-a za slanje email-om
-        //$text = "Please click on the following link to reset your password: $url"; // ovo ima u tutorijalu ali se ovde u pepipost ne koristi
+        // next 2 lines are commented out (although it is a legitimate though hardcoded way), but we will be using twig and View class insteadto create text and html to send via email
+        //$text = "Please click on the following link to reset your password: $url"; // not used in pepipost
         //$html = "Please click <a href=\"$url\">here</a> to reset your password";
-        $text = View::getTemplate('Password/reset_email.txt', ['url' => $url]); // prosledjujemo i url kako bio dostupan twig-u
-        $html = View::getTemplate('Password/reset_email.html', ['url' => $url]); // prosledjujemo i url kako bio dostupan twig-u
+        $text = View::getTemplate('Password/reset_email.txt', ['url' => $url]); // also passing url to have it available in twig
+        $html = View::getTemplate('Password/reset_email.html', ['url' => $url]); // also passing url to have it available in twig
 
-        Mail::send($this->email, "Password reset", $text, $html); // $text prosledjujemo ali za razliku od mailgun-a koji se koristi u kursu, pepipost koji mi koristimo ne zahteva text, vec samo html
+        Mail::send($this->email, "Password reset", $text, $html); // we're passing text although pepipost does not require it (mailgun does though)
     }
 
     public static function findByPasswordReset($token)
     {
         $token = new Token($token);
-        $hashed_token = $token->getHash(); // da bismo pronasli token u bazi moramo prvo da ga hashujemo jer se hashovan i cuva u bazi
+        $hashed_token = $token->getHash(); // to find hashed token in db we have to hash it first as well
 
         $sql = 'SELECT * FROM users
-               WHERE password_reset_hash = :token_hash'; // vraca samo one korisnike kod kojih se sacuvani token hash poklapa sa onim koji je stigao putem mail-a
+               WHERE password_reset_hash = :token_hash'; // returns only users which have the same stored token as the one received by email
 
         $db = static::getDB();
         $stmt = $db->prepare($sql);
 
         $stmt->bindValue(':token_hash', $hashed_token, PDO::PARAM_STR);
-        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class()); // ovim cinimo da umesto niza sto je default bude napravljen objekat klase User sa podacima iz baze. Drugi argument pronalazi namespace za pozvanu klasu (User u ovom slucaju).
+        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class()); // instead of an array which is deafult the result will be an object of the User class populated by the data from db. 2nd param finds a namespace for the called class (User in this case).
         $stmt->execute();
-        $user = $stmt->fetch(); // fetch() vraca false ako nije pronadjeno nista u bazi
+        $user = $stmt->fetch(); // fetch() returns false if nothing was found in the db
 
         if ($user) {
-            if (strtotime($user->password_reset_expires_at) > time()) { // samo ako token nije istekao vraca $user objekat
+            if (strtotime($user->password_reset_expires_at) > time()) { // returning user object only if token has not expired
                 return $user;
             }
-        } // ukoliko ne vracamo nista eksplicitno u php-u se po defaultu vraca NULL
+        } // If we're not explicitely returning anything in PHP, NULL will be returned by default
     }
 
     public function resetPassword($password)
     {
-        $this->password = $password; // ovim samo menjamo password property u objektu $user koji je prethodno instanciran i to tako sto je nakon upita u bazu rezultat umesto niza kreirao objekat klase User zahvaljujuci $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class()) u ovdasnjoj metodi findByPasswordReset()
-        $this->validate(); // kao i kod kreiranja usera vrsimo backend validaciju unete sifre
-        if (empty($this->errors)) { // update user record (true ako je niz errors prazan)
+        $this->password = $password; // we're changing password property in User object which has previously been instantiated by request to db which has returned an User object (instead of an array: $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class())
+        $this->validate(); // just as when creating a user we're doing backend password validation
+        if (empty($this->errors)) { // update user record (true if errors array is empty)
 
-            $password_hash = password_hash($this->password, PASSWORD_DEFAULT); // stvaramo password hash koji automatski dodaje i salt i to ce biti vrednost koju cemo cuvati na serveru
+            $password_hash = password_hash($this->password, PASSWORD_DEFAULT); // we're creating a password hash that automatically adds unique salt and that would be the value we're going to store in db
             $sql = 'UPDATE users
                         SET password_hash = :password_hash,
                         password_reset_hash = NULL,
                         password_reset_expires_at = NULL
-                        WHERE id = :id'; // update-ujemo password, i istovremeno ponustavamo (setujemo na NULL) vrednosti hashovanog tokena za reset i vreme njegovog isticanja
+                        WHERE id = :id'; // password updating and setting to NULL both password_reset_hash and its expiry time
 
             $db = static::getDB();
             $stmt = $db->prepare($sql);
@@ -249,20 +246,20 @@ class User extends \Core\Model
     {
         $url = 'http://' . $_SERVER['HTTP_HOST'] . '/signup/activate/' . $this->activation_token;
 
-        $text = View::getTemplate('Signup/activation_email.txt', ['url' => $url]); // prosledjujemo i url kako bio dostupan twig-u
-        $html = View::getTemplate('Signup/activation_email.html', ['url' => $url]); // prosledjujemo i url kako bio dostupan twig-u
+        $text = View::getTemplate('Signup/activation_email.txt', ['url' => $url]); // also passing url to have it available in twig
+        $html = View::getTemplate('Signup/activation_email.html', ['url' => $url]); // also passing url to have it available in twig
 
-        Mail::send($this->email, "Account activation", $text, $html); // $text prosledjujemo ali za razliku od mailgun-a koji se koristi u kursu, pepipost koji mi koristimo ne zahteva text, vec samo html
+        Mail::send($this->email, "Account activation", $text, $html); // we're passing text although pepipost does not require it (mailgun does though)
     }
 
-    public static function activate($value) // aktiviranje naloga (izmenom is_active atributa u bazi) sa prosledjenim tokenom (putem klika na link poslat za aktivaciju na mail) kroz parametar $value
+    public static function activate($value) // account activation (changing is_active attributa in db) providing token value (through clicking on the activation link sent via email) 
     {
         $token = new Token($value);
         $hashed_token = $token->getHash();
         $sql = 'UPDATE users
                         SET is_active = 1,
                         activation_hash = NULL
-                        WHERE activation_hash = :hashed_token'; // pronalazi korisnika po hash-u token poslatog na mail, menja is_active na 1 (tj. true) i ponistava activation_hash na NULL
+                        WHERE activation_hash = :hashed_token'; // looks up for user based on hash of a token sent via emial and sets is_active to 1 (true) while alse setting activation_hash to NULL
 
         $db = static::getDB();
         $stmt = $db->prepare($sql);
@@ -275,7 +272,7 @@ class User extends \Core\Model
     {
         $this->name = $data['name'];
         $this->email = $data['email'];
-        if ($data['password'] != '') { // samo ako je uneta nova sifra
+        if ($data['password'] != '') { // updates password only when user has entered a new one
             $this->password = $data['password'];
         }
 
@@ -286,7 +283,7 @@ class User extends \Core\Model
                     SET name = :name,
                         email = :email';
 
-            if (isset($this->password)) {    // dodaje u sql statement deo za update passworda samo ako je unet novi password         
+            if (isset($this->password)) {    // adds password changing part to sql statement only if new password has been set         
                 $sql .= ', password_hash = :password_hash';
             }
 
@@ -298,7 +295,7 @@ class User extends \Core\Model
             $stmt->bindValue(':name', $this->name, PDO::PARAM_STR);
             $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
             $stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
-            if (isset($this->password)) { // opet, samo ako je unet novi password u editovanju profila
+            if (isset($this->password)) { // binding only if new password has been set
                 $password_hash = password_hash($this->password, PASSWORD_DEFAULT);
                 $stmt->bindValue(':password_hash', $password_hash, PDO::PARAM_STR);
             }
@@ -306,7 +303,7 @@ class User extends \Core\Model
             return $stmt->execute();
         }
 
-        return false; // ako je doslo do greske u validaciji
+        return false; // if there was an error in validation
     }
 
     public function updatePreferredKeywords($keywords)
