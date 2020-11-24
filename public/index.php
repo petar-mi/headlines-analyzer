@@ -19,7 +19,8 @@
    // require dirname(__DIR__) . '/vendor/autoload.php'; // this way composer autoloads ALL packages installed in a project!
 
    require '../vendor/autoload.php'; // same as the upper line, does the same thing
-   require_once dirname(__DIR__) . '/vendor/test/vendor/autoload.php'; // had to be added manually for pepipost package to work (folder vendor/test)
+   // require_once dirname(__DIR__) . '/vendor/test/vendor/autoload.php'; // had to be added manually for pepipost package to work (folder vendor/test)
+                                                                          // temporaryly commented out for heroku deployment
    Twig_Autoloader::register(); // deprecated, but since we're using old 1.0 version it is necessary for twig to work
 
    // *** CLASS AUTOLOADER *** is converting name namespaced class name into a directory

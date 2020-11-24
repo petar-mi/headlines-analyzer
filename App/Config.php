@@ -12,18 +12,28 @@ class Config
     //       DB_PASSWORD = '',
     //       SHOW_ERRORS = true; // set to true for development, for production should be false so that errors are not shown in detail but saved to log file
 
-    // params for connecting to mvclogin base
-          const DB_HOST = 'localhost',
-          DB_NAME = 'mvclogin',
-          DB_USER = 'mvcuser',
-          DB_PASSWORD = 'novasifra',
+    // params for connecting to local mysql base with a name mvclogin
+          // const DB_HOST = 'localhost',
+          // DB_NAME = 'mvclogin',
+          // DB_USER = 'mvcuser',
+          // DB_PASSWORD = 'novasifra',
+          // SHOW_ERRORS = true, 
+
+          // Data for Postgres SQL (Heroku add-on) - credentials periodically change!        
+          const DB_HOST = 'ec2-52-31-233-101.eu-west-1.compute.amazonaws.com',
+          DB_NAME = 'd2cpciup9a1td3',
+          DB_USER = 'hchczruigipqmp',
+          DB_PASSWORD = 'd21ed7a08e9b9518f5ca8ee6a7c41c0fc9cbfeaff9144ee4ae95eb18a250671d',
           SHOW_ERRORS = true, 
 
           SECRET_KEY = 'mK8yRfln1lE2IzYFjPp0Eql9BEZfTcZ9', // random key generated on https://randomkeygen.com/  (taken from CodeIgniter Encryption keys). This key is consumed in Token.php for token hashing
           PEPIPOST_API_KEY = '2cd01a8ca0bcc42107c74eb87972b1ff', // for automated email sending apikey from panel here  https://app.pepipost.com/index.php/    login: bobanabg@mail.com pass: Novasifra123
           PEPIPOST_DOMAIN = 'info@pepisandbox.com', // pepisandbox.com is the important part, info has been written arbitrarily
           // WEBSITES_TO_SCRAP = array("mondo" => "mondo.rs", "luftika" => "luftika.rs", "noizz" => "noizz.rs");
-          WEBSITES_TO_SCRAP = array("mondo" => ["mondo.rs", "/opt/lampp/htdocs/App/Images/mondo_logo.png"], "luftika" => ["luftika.rs", "/opt/lampp/htdocs/App/Images/luftika_logo.png"], "noizz" => ["noizz.rs", "/opt/lampp/htdocs/App/Images/noizz_logo.png"]);
+          // to be used locally:
+          // WEBSITES_TO_SCRAP = array("mondo" => ["mondo.rs", "/opt/lampp/htdocs/App/Images/mondo_logo.png"], "luftika" => ["luftika.rs", "/opt/lampp/htdocs/App/Images/luftika_logo.png"], "noizz" => ["noizz.rs", "/opt/lampp/htdocs/App/Images/noizz_logo.png"]);
+          // to be used for heroku:
+          WEBSITES_TO_SCRAP = array("mondo" => ["mondo.rs", "https://user-images.githubusercontent.com/47416193/100085499-657cc500-2e4c-11eb-8e35-a2d99e439014.png"], "luftika" => ["luftika.rs", "https://user-images.githubusercontent.com/47416193/100085410-4a11ba00-2e4c-11eb-8ff6-b843948700de.png"], "noizz" => ["noizz.rs", "https://user-images.githubusercontent.com/47416193/100085501-66155b80-2e4c-11eb-8abe-ff7966b1536b.png"]);
           
           const EXCLUDE_WORDS = array(
             "Da", "Ne", "Li", "Zar", "Neka", "Ala", "Dakle", "Samo", "Jedino", "Kao", "Evo", "Eto", "Eno",

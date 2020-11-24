@@ -53,7 +53,10 @@ class Collections extends Authenticated // we have to be logged-in to be able to
                 $img_file = $imgUrl;
                 $imgData = base64_encode(file_get_contents($img_file));
                 // Format the image SRC:  data:{mime};base64,{data};
-                $src = 'data: ' . mime_content_type($img_file) . ';base64,' . $imgData;
+                // to be used locally:
+                // $src = 'data: ' . mime_content_type($img_file) . ';base64,' . $imgData;
+                // to be used for heroku:
+                $src = 'data: ' . 'image/png' . ';base64,' . $imgData;
                 $logoBase64Arr = array_merge($logoBase64Arr, array($site=>$src));
             }
 

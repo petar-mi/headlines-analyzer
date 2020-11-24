@@ -4,7 +4,8 @@ namespace App\Models;
 
 use PDO, PDOException;
 
-require_once("/opt/lampp/htdocs/Core/Model.php"); // has to be required manually for cron to work
+// require_once("/opt/lampp/htdocs/Core/Model.php"); // has to be required manually for cron to work
+                                                     // temporaryly commented out for heroku deployment 
 
 class Keywords extends \Core\Model
 {
