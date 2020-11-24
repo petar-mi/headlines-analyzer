@@ -5,13 +5,8 @@ namespace Core;
 use PDO, PDOException;
 use App\Config;
 
-require_once("/opt/lampp/htdocs/App/Config.php"); // mora da se uradi require rucno da bi radio cronjob
+require_once("/opt/lampp/htdocs/App/Config.php"); // had to be required separately for cronjob to work
 
-/**
- * Base model
- *
- * PHP version 5.4
- */
 abstract class Model
 {
 
@@ -24,8 +19,8 @@ abstract class Model
     {
         static $db = null;
 
-        if ($db === null) { // proverava se da li je konekcija vec napravljena, zato je i ekstrahovana logika za konekciju u zasebnu klasu kako se ne bi vrsilo konektovanje za svaki query
-            // $host = 'localhost'; // zakomentarisano jer ce biti koristene konstante definisane u Config.php
+        if ($db === null) { // checks if connection is already established, that's why the logic for connection is extracted in a separate class so that we would not have to connect for each query to db
+            // $host = 'localhost'; // constants from Config.php will be used instead
             // $dbname = 'mvc';
             // $username = 'root';
             // $password = '';
@@ -34,7 +29,7 @@ abstract class Model
                 $dsn = 'mysql:host=' . Config::DB_HOST . ';dbname=' . Config::DB_NAME . ';charset=utf8';
                 $db = new PDO($dsn, Config::DB_USER, Config::DB_PASSWORD);
 
-                $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // omogucava da bude bacen exception kada se pojavi greska u bazi
+                $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // enables exception to be thrown for errors that occur in db
 
             } catch (PDOException $e) {
                 echo $e->getMessage();

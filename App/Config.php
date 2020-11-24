@@ -5,22 +5,23 @@ namespace App;
 // App configuration
 
 class Config 
-{ //zakomentarisani su parametri potrebni za bazu mvc iz osnovnog kursa
+{ // params for connecting to mvc base from basic course
     // const DB_HOST = 'localhost',
     //       DB_NAME = 'mvc',
     //       DB_USER = 'root',
     //       DB_PASSWORD = '',
-    //       SHOW_ERRORS = true; // true za development, za production treba da je false kako se greske ne bi detaljno prikazivale vec snimale u log fajl
+    //       SHOW_ERRORS = true; // set to true for development, for production should be false so that errors are not shown in detail but saved to log file
 
-    // slede parametri za bazu mvclogin kreiranu u drugom delu kursa
+    // params for connecting to mvclogin base
           const DB_HOST = 'localhost',
           DB_NAME = 'mvclogin',
           DB_USER = 'mvcuser',
           DB_PASSWORD = 'novasifra',
-          SHOW_ERRORS = true, // true za development, za production treba da je false kako se greske ne bi detaljno prikazivale vec snimale u log fajl
-          SECRET_KEY = 'mK8yRfln1lE2IzYFjPp0Eql9BEZfTcZ9', // random key koji je generisan na sajtu https://randomkeygen.com/  i uzet iz dela CodeIgniter Encryption keys. Ovaj key se koristi u Token.php za hashovanje tokena
-          PEPIPOST_API_KEY = '2cd01a8ca0bcc42107c74eb87972b1ff', // za automatsko slanje mailova apikey from panel here  https://app.pepipost.com/index.php/    login: bobanabg@mail.com sifra: Novasifra123
-          PEPIPOST_DOMAIN = 'info@pepisandbox.com', // bitno je pepisandbox.com, info sam stavio proizvoljno
+          SHOW_ERRORS = true, 
+
+          SECRET_KEY = 'mK8yRfln1lE2IzYFjPp0Eql9BEZfTcZ9', // random key generated on https://randomkeygen.com/  (taken from CodeIgniter Encryption keys). This key is consumed in Token.php for token hashing
+          PEPIPOST_API_KEY = '2cd01a8ca0bcc42107c74eb87972b1ff', // for automated email sending apikey from panel here  https://app.pepipost.com/index.php/    login: bobanabg@mail.com pass: Novasifra123
+          PEPIPOST_DOMAIN = 'info@pepisandbox.com', // pepisandbox.com is the important part, info has been written arbitrarily
           // WEBSITES_TO_SCRAP = array("mondo" => "mondo.rs", "luftika" => "luftika.rs", "noizz" => "noizz.rs");
           WEBSITES_TO_SCRAP = array("mondo" => ["mondo.rs", "/opt/lampp/htdocs/App/Images/mondo_logo.png"], "luftika" => ["luftika.rs", "/opt/lampp/htdocs/App/Images/luftika_logo.png"], "noizz" => ["noizz.rs", "/opt/lampp/htdocs/App/Images/noizz_logo.png"]);
           

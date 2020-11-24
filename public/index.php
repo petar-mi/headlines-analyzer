@@ -1,94 +1,101 @@
  <?php
-    // localhost points to "/opt/lampp/htdocs/public" 
-    // the above is defined in /opt/lampp/etc/httpd.conf as:  DocumentRoot "/opt/lampp/htdocs/public"
-    // .htaccess file makes pretty URLs w/o the need to use ? sign in the request
+   // localhost points to "/opt/lampp/htdocs/public" 
+   // the above is defined in /opt/lampp/etc/httpd.conf as:  DocumentRoot "/opt/lampp/htdocs/public"
+   // .htaccess file makes pretty URLs w/o the need to use ? sign in the request
 
-    //echo 'Requested URL address= "' . $_SERVER['QUERY_STRING'] . '"'; 
-
-
-    // require the controller class
-    // require '../App/Controllers/Posts.php'; // zakomentarisano jer koristimo Autoloading klasa
-
-    // *** Routing ***
-    // require '../Core/Router.php'; // // zakomentarisano jer koristimo Autoloading klasa
-
-    // twig (ili bilo koji drugi php paket) se instalira u projektu tako sto se otvori terminal u root folderu projekta i kuca: composer require "twig/twig:~1.0"
-    // kompozer ce onda automatski napraviti folder vendor i u njega smestiti twig ili drugi trazeni paket
-    // takodje postoji i opcija da se u root folderu napravi .json fajl u kome se navedu paketi i zatim u root folderu projekta kuca samo composer install
-    // require_once dirname(__DIR__) . '/vendor/twig/twig/lib/Twig/Autoloader.php'; // na ovaj nacin moramo rucno pronalaziti lokaciju autoloader.php za svaki paket koji zelimo da upotrebimo u projektu
-    // require dirname(__DIR__) . '/vendor/autoload.php'; // na ovaj nacin composer vrsi autoload SVIH paketa instaliranih u projektu!
-    
-    require '../vendor/autoload.php'; // isto sto i gornji red, svejedno
-    require_once dirname(__DIR__) . '/vendor/test/vendor/autoload.php'; // moralo rucno da se doda kako bi radio pepipost paket za slanje email-ova (folder vendor/test)
-    Twig_Autoloader::register(); // ovo je deprecated metoda, ali posto koristim stariju verziju 1.0, neophodna je da bi radio twig
-
-    // *** CLASS AUTOLOADER *** is converting name namespaced class name into a directory
-    // *** zakomentarisano jer su izvrsen autoload pomocu composer-a (5. poglavlje, video 048), klase su navedene u composer.json pod "psr-4", a zatim se u terminalu kuca: composer dump-autoload 
-    // kako bi se osvezio editovan json fajl, inace kada se koristi psr-4 onda se kao key u json-u navodi namespace, a kao value path to class files, 
-    // i jedno i drugo relativno u odnosu na root projekta, ako se koristi composer autoloader nije nuzno da folderi i namespace-ovi imaju ista imena
-    
-    // spl_autoload_register(function ($class) { // ukoliko se zatrazi klasa ova funkcija je prosledjuje kao argument kako bi klasa bila pronadjena i ucitana
-    //     $root = dirname(__DIR__); // get the parent directory (of the public folder)
-    //     $file = $root . '/' . str_replace('\\', '/', $class) . '.php'; // pronalazi file u kome se klasa nalazi (file mora nositi isti naziv kao i klasa!!!)
-    //     if (is_readable($file)) { // is_readable() is used to check whether the specified file exists and is readable or not
-    //         require $root . '/' . str_replace('\\', '/', $class) . '.php'; // vrsi require odgovarajuce klase
-    //     }
-    // });
+   //echo 'Requested URL address= "' . $_SERVER['QUERY_STRING'] . '"'; 
 
 
-    // Error and Exception handling
-    error_reporting(E_ALL);
-    set_error_handler('Core\Error::errorHandler'); // pozivamo ove dve metode iz klase Core\Error.php
-    set_exception_handler('Core\Error::exceptionHandler');
+   // require the controller class
+   // require '../App/Controllers/Posts.php'; // commented-out because we use class autoloading
 
-    session_start(); // starts/resumes a session on every request
-                     // po defaultu session cookie se brise tek kada se zatvori browser- it does not expire
+   // *** Routing ***
+   // require '../Core/Router.php'; // commented-out because we use class autoloading
 
-    // Routing
-    $router = new Core\Router(); // dodat Core namespace ispred Router klase ciji se objekat instancira
-                                 // iako nismo prethodno izvrsili require za Router.php file, ovde ce se aktivirati autoload funkcija kojoj
-                                 // ce kao argument biti prosledjen string "Core\Router" i posto namespace odgovaraju strukturi foldera, 
-                                 // a klase nazivima fajlova, klasa ce biti locirana i bice izvrsen require trazenog fajla
-    
-    // Add the routes
-    $router->add('', ['controller' => 'Home', 'action' => 'index']); // rucno dodavanje ruta, ova je za home, mada nema potrebe s obzirom da dole imamo automatsko prepoznavanje controllera i action-a pomocu regexa
-    $router->add('login', ['controller' => 'Login', 'action' => 'new']); // uneseno rucno cisto da bi i landing na url: login (a ne samo na login/new) ispisao login stranicu
-    $router->add('logout', ['controller' => 'Login', 'action' => 'destroy']);
-    $router->add('password/reset/{token:[\da-f]+}', ['controller' => 'Password', 'action' => 'reset']); // ovo je specijalna ruta koja obradjuje linkove na koje se klikne iz mail-a za promenu sifre i ciji url je u obliku slicnom ovom: http://localhost/password/reset/4523ade1ef20c01fe7cd35c318db45dd
-                                                                                                        // gde je na kraju token koji hexadecimal te se sastoji iz brojeva i slova od a do f   
-                                                                                                        // zato je ovde na kraju dodato {token:[\da-f]+} sto znaci da ce u Password kontroleru, u metodi reset biti dostupan i parametar 'token' pri cemu je ovde ostavljen regex [\da-f]+ koji sluzi da uhvati hexadecimalni deo url-a nakon poslednje kose crte /                         
-    $router->add('signup/activate/{token:[\da-f]+}', ['controller' => 'Signup', 'action' => 'activate']); // isto kao prethodni red samo za aktivaciju naloga
+   // twig (or any other php package) is installed in project by opening terminal in project root folder and then enter: composer require "twig/twig:~1.0"
+   // composer will then automatically create vendor folder and place twing (or other requested package) into it
+   // there is also an option to make a .json file in root folder in which we name packages and then we only type composer install
+   // require_once dirname(__DIR__) . '/vendor/twig/twig/lib/Twig/Autoloader.php'; // this way we have to manually find the location of autoloader.php for each package we want to use in a project
+   // require dirname(__DIR__) . '/vendor/autoload.php'; // this way composer autoloads ALL packages installed in a project!
+
+   require '../vendor/autoload.php'; // same as the upper line, does the same thing
+   require_once dirname(__DIR__) . '/vendor/test/vendor/autoload.php'; // had to be added manually for pepipost package to work (folder vendor/test)
+   Twig_Autoloader::register(); // deprecated, but since we're using old 1.0 version it is necessary for twig to work
+
+   // *** CLASS AUTOLOADER *** is converting name namespaced class name into a directory
+   // *** commented-out because autoload was performed using composer (5th chapter, video 048), classes are listed in composer.json under "psr-4", and then we type in terminal: composer dump-autoload 
+   // to refresh edited json file, when psr-4 is used then as a key in json-u we put namespace, and path to class files as value, 
+   // both relative to project root. If composer is used it is not necessary for folders and namespaces to have the same names
+
+   // spl_autoload_register(function ($class) { // when class is needed this function passes it as an argument argument so that the class could be found and loaded
+   //     $root = dirname(__DIR__); // get the parent directory (of the public folder)
+   //     $file = $root . '/' . str_replace('\\', '/', $class) . '.php'; // finds a file in which a class is located (file must have the same name as the class!)
+   //     if (is_readable($file)) { // is_readable() is used to check whether the specified file exists and is readable or not
+   //         require $root . '/' . str_replace('\\', '/', $class) . '.php'; // requires class that has previously been located
+   //     }
+   // });
+
+
+   // Error and Exception handling
+   error_reporting(E_ALL);
+   set_error_handler('Core\Error::errorHandler'); // calling these two methods from Core\Error.php class
+   set_exception_handler('Core\Error::exceptionHandler');
+
+   session_start(); // starts/resumes a session on every request
+   // by default session cookie is erased only after the browser is closed - it does not expire
+
+   // Routing
+   $router = new Core\Router(); // Core namespace added before Router class, the object of which is being instantiated
+   // althugh we haven't previously required Router.php file, here autoload function will be executed
+   // and string "Core\Router" will be passed to it, and since namespaces reflect folder structure, 
+   // a and classes reflect filenames, a class that is needed will be located and a file containing it will be required
+
+   // Add the routes
+   // manually addes routes:
+   $router->add('', ['controller' => 'Home', 'action' => 'index']); // this is manually added home route (although there is no need for it since we also will be using automatically detecting controllera and action using regex)
+   $router->add('login', ['controller' => 'Login', 'action' => 'new']); // manually entered so that landing on login (and not only on login/new) would render login page
+   $router->add('logout', ['controller' => 'Login', 'action' => 'destroy']);
+
    
-    // $router->add('posts', ['controller' => 'Posts', 'action' => 'index']); // ovo je osnovna ruta za kontroler
-    // $router->add('posts/new', ['controller' => 'Posts', 'action' => 'new']); // a ovo kontroler/akcija
-    $router->add('{controller}/{action}'); // ako u browseru kucamo npr: http://localhost/signup/new automatski ce signup biti prepoznato kao controller, a new kao action i prikazace se odgovarajuca stranica ali mora biti hendlovana u kontroleru i mora postojati u views
-    $router->add('{controller}/{id:\d+}/{action}');
-    $router->add('admin/{controller}/{action}', ['namespace' => 'Admin']); // prosledjuje se i niz od jednog clana
 
 
-    // Display the routing table
-    //echo "<div>";
-    //echo '<pre>';
-    //var_dump($router->getRoutes());
-    //echo htmlspecialchars(print_r($router->getRoutes(), true));// ako se radi print ili echo stringa u PHP a string sadrzi neke html tagove, 
-    // php te tagove pokusava da izvrsi kao html, a ako nisu validni samo ih preskoci
-    // da bi se odstampao realni sadrzaj stringa potrebno je staviti htmlspecialchars
+   // $router->add('posts', ['controller' => 'Posts', 'action' => 'index']); // basic route for controller
+   // $router->add('posts/new', ['controller' => 'Posts', 'action' => 'new']); // and this for controller/action
 
-    //echo '</pre>';
-    //echo "</div>";
+   // using regex 
+   $router->add('{controller}/{action}'); // if we request: http://localhost/signup/new signup will automatically be recognized as a controller, 
+                                          // and new as action and the requested page will be rendered but, but only if it was handled in the controller and if view file exists as well
+   $router->add('{controller}/{id:\d+}/{action}'); // adding the optin to have an id param between cotroller and action
+   $router->add('admin/{controller}/{action}', ['namespace' => 'Admin']); // passing an array consisting of one elemenet
+
+   $router->add('password/reset/{token:[\da-f]+}', ['controller' => 'Password', 'action' => 'reset']); // special route that handles links for password change that were sent to emails. Links have a form similar to this: http://localhost/password/reset/4523ade1ef20c01fe7cd35c318db45dd
+                                                                                                       // at the end there's a hexadecimal token containing digits and characters from "a" to "f"   
+                                                                                                       // that's why we have the {token:[\da-f]+} at the end that makes 'token' param available to Password controller in reset method 
+                                                                                                       // regex [\da-f]+ cathes hexadecimalni part of url that comes after last slash /                         
+   $router->add('signup/activate/{token:[\da-f]+}', ['controller' => 'Signup', 'action' => 'activate']); // same as previous route but for account activation links from email
+   // Display the routing table
+   //echo "<div>";
+   //echo '<pre>';
+   //var_dump($router->getRoutes());
+   //echo htmlspecialchars(print_r($router->getRoutes(), true));// htmlspecialchars is used if we echo or print a string in PHP that contains some html tags, because without it
+                                                                // php tries to execute those tags as html, (if they are not valid they are just skipped)
+                                                               
+
+   //echo '</pre>';
+   //echo "</div>";
 
 
 
+   // just a very basic example
+   // Match the requested route
+   // $url = $_SERVER['QUERY_STRING'];
 
-    // Match the requested route
-    // $url = $_SERVER['QUERY_STRING'];
+   // if ($router->match($url)) {
+   //     echo '<pre>';
+   //     var_dump($router->getParams());
+   //     echo '</pre>';
+   // } else {
+   //     echo "No route found for URL '$url'";
+   // }
 
-    // if ($router->match($url)) {
-    //     echo '<pre>';
-    //     var_dump($router->getParams());
-    //     echo '</pre>';
-    // } else {
-    //     echo "No route found for URL '$url'";
-    // }
-
-    $router->dispatch($_SERVER['QUERY_STRING']);
+   $router->dispatch($_SERVER['QUERY_STRING']);

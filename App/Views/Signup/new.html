@@ -4,8 +4,8 @@
 
 {% block footer %}
 
-<script src="/js/hideShowPassword.min.js"></script> <!-- jquery plugin skinut s neta koji pravi kucicu za prikazivanje passworda -->
-<script src="/js/app.js"></script> <!-- deo koji se bavi validacijom password-a u jquery-iju -->
+<script src="/js/hideShowPassword.min.js"></script> <!-- 3rd party jquery plugin that renders show/hide password -->
+<script src="/js/app.js"></script> <!-- password validation using jquery  -->
 
 <script>
         $(document).ready(function() {
@@ -19,7 +19,7 @@
                     email: {
                         required: true,
                         email: true,
-                        remote: '/account/validateemail' // nejasno ostaje kako radi i sa '/account/validateemail' sa ovom crticom  kako je navedeno u tutorijalu posto action u Account controlleru se zove validateEmail, verovatno je tako podesen regex koji razaznaje url-ove u osnovi MVC framework-a
+                        remote: '/account/validateemail' 
                     },
                     password: {
                         required: true,
@@ -33,7 +33,7 @@
                     }
                 }
             });
-            $('#inputPassword').hideShowPassword({ // kucica za prikazivanje passworda (radi koristeci gore ucitanu jquery skriptu)
+            $('#inputPassword').hideShowPassword({ // renders show/hide password using 3rd party jquery plugin
                 show: false,
                 innerToggle: 'focus'
             });
@@ -45,7 +45,7 @@
 
 <h1>Sign up</h1>
 
-<!-- deo koji proverava da li postoje greske koje su prosledjene bekendu i ispisuje ih -->
+<!-- checks for errors in what is to be sent to backend and displays them -->
 {% if user.errors is not empty %}
     <p>Errors:</p>
     <ul>{% for error in user.errors %}
@@ -57,7 +57,7 @@
 
 <form method="POST" action="/signup/create" id="formSignup">
     <div class="form-group">
-        <label for="inputName">Name</label> <!-- u value propertiju inputa pomocu twig-a mozemo da koristimo vrednost prosledjenog asocijativnog niza kako se ne bi moralo ponovo ukucavati celo ime ili email u drugom slucaju -->
+        <label for="inputName">Name</label> <!-- in value property we reuse twig value of assoc. array sent to backend so that the user doesn't have to retype name or email -->
                 <input id="inputName" name='name' placeholder="Name" autofocus value="{{ user.name }}" required class="form-control"/>
     </div>
     <div class="form-group">
@@ -68,8 +68,8 @@
         <label for="inputPassword">Password</label>
                 <input type="password" id="inputPassword" name='password' placeholder="Password" autofocus required class="form-control" />
                 <!-- pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$" title="Minimum 6 chars, at least one letter and number" /> -->
-                <!-- u pattern propertiju mozemo da koristimo regexe za validaciju, ovaj proverava da li ima 6 karaktera i da li ima po bar jedno slovo i broj, s tim sto je koriscenje pattern propertija nepouzdano -->
-                <!-- u title properti unosimo ono sto zelimo da bude ispisano ako unos ne prodje html validaciju -->
+                <!-- pattern attribute validation (which is unreliable, so it is commented out) we can use regex (this one checks for 6 chars and for at least 1 letter and 1 digit -->
+                <!-- title attribute displays the message if the validation has not passed -->
     </div>
 
     <button type="submit" class="btn btn-primary">Sign up</button>

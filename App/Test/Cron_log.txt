@@ -1,0 +1,403 @@
+
+Warning: file_get_contents(): php_network_getaddresses: getaddrinfo failed: Name or service not known in /opt/lampp/htdocs/App/Scrap.php on line 30
+
+Warning: file_get_contents(https://mondo.rs/): failed to open stream: php_network_getaddresses: getaddrinfo failed: Name or service not known in /opt/lampp/htdocs/App/Scrap.php on line 30
+
+Warning: DOMDocument::loadHTML(): Empty string supplied as input in /opt/lampp/htdocs/App/Scrap.php on line 33
+
+Warning: file_get_contents(): php_network_getaddresses: getaddrinfo failed: Name or service not known in /opt/lampp/htdocs/App/Scrap.php on line 30
+
+Warning: file_get_contents(https://luftika.rs/): failed to open stream: php_network_getaddresses: getaddrinfo failed: Name or service not known in /opt/lampp/htdocs/App/Scrap.php on line 30
+
+Warning: DOMDocument::loadHTML(): Empty string supplied as input in /opt/lampp/htdocs/App/Scrap.php on line 33
+
+Warning: file_get_contents(): php_network_getaddresses: getaddrinfo failed: Name or service not known in /opt/lampp/htdocs/App/Scrap.php on line 30
+
+Warning: file_get_contents(https://noizz.rs/): failed to open stream: php_network_getaddresses: getaddrinfo failed: Name or service not known in /opt/lampp/htdocs/App/Scrap.php on line 30
+
+Warning: DOMDocument::loadHTML(): Empty string supplied as input in /opt/lampp/htdocs/App/Scrap.php on line 33
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131
+SQLSTATE[HY000] [2002] Connection refused
+Fatal error: Uncaught Error: Call to a member function prepare() on null in /opt/lampp/htdocs/App/Models/Keywords.php:131
+Stack trace:
+#0 /opt/lampp/htdocs/App/Scrap.php(20): App\Models\Keywords::findTitleByWebsite('mondo.rs', '1000-01-01', '9999-12-31')
+#1 /opt/lampp/htdocs/App/Cronjob.php(11): App\Scrap->__construct(Array)
+#2 {main}
+  thrown in /opt/lampp/htdocs/App/Models/Keywords.php on line 131

@@ -4,7 +4,7 @@
 
 {% block footer %}
 <script>
-    $(document).ready(function() {
+    $(document).ready(function() { // gets client IP address using 3rd party resource
 $.getJSON('https://ipapi.co/json/', function (data) {
     document.getElementById('clientIp').value = data.ip;
         });
@@ -26,7 +26,7 @@ $.getJSON('https://ipapi.co/json/', function (data) {
     </div>
     <div class="checkbox">
         <label>
-            <!-- da bi checkbox bio ucitan kao cekiran dovoljno je da samo poseduje atribut checked a to se pomocu tviga postize ovako: -->
+            <!-- for checkbox to be loaded as checked it is enough just to have ckecked attribute present which can be accomplished using twig: -->
             <input type="checkbox" id="checkboxID" name="remember_me" {% if remember_me %} checked {% endif %}/> Remember me
         </label>
     </div>

@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Controllers; // namespace koji korespondira sa organizacijom foldera
-
+namespace App\Controllers; // namespace that coresponds to folder organization
 use App\Models\User;
-use \Core\View; // koristimo use kako ne bismo morali da navodimo za pozivanje staticke klase (ili instanciranje objekata) ceo namespace svaki put
-
+use \Core\View; // we use "use" so that we wouldn't have to name the whole namespace each time 
 
 class Signup extends \Core\Controller
 {
@@ -14,21 +12,19 @@ class Signup extends \Core\Controller
     }
     public function createAction()
     {
-        // echo '<pre>';
-        // var_dump($_POST);
-        // echo '</pre>';
-        $user = new User($_POST); // iako bi tehnicki i iz modela mogli direktno pristupiti onome sto je poslato u requestu posto je superglobal $_POST dostupan svuda, ipak ovde
-                                  // instanciramo objekat klase User i prosledjujemo mu parametre zahteva kao argument koji ce biti obradjen u konstruktoru
-        if ($user->save()) {; // snimamo u bazu 
+        
+        $user = new User($_POST); // although technically we could access request data from the model through $_POST superglobal, still we're instantiating an User class object passing it request params that would be handled in the constructor
+        if ($user->save()) {; // saving to db
             $user->sendActivationEmail();
-            // radi se redirekcija tako sto se poziva drugi action cime se menja adresa u browseru, pa tek ta druga adresa renderuje stranicu, ukoliko se render success.html izvrsi odmah ovde URL u browseru ostaje signup/create i prilikom refresha salju se na server ponovo isti podaci sto je lose naravno
-            $this->redirect('/signup/success'); // isto sto i Controller::redirect('/');
+            // redirection is done by calling another action which changes url address in the browser, so that another address renders the page. 
+            // If render success.html would be executed here without redirection, url in the browser stays on signup/create and by refreshing the page same date will be sent again to the server
+            $this->redirect('/signup/success'); // same as Controller::redirect('/') since Signup extends Controller
         } else {
-            // var_dump($user->errors); // ispisuje greske koje su sacuvane u nizu errors klase User kojem objekat user ima pristup
+            // var_dump($user->errors); // displays errors stored in User class as an array
         
             View::renderTemplate('Signup/new.html', [
                 'user' => $user
-            ]); // ponovo ucitava Signup stranicu posto postoje greske u validaciji i prosledjuje $user objekat kao vrednost u asoc. nizu
+            ]); // reloads Signup page since validation errors are present and passes User class object in an associative array
         }
         
     }
@@ -40,7 +36,7 @@ class Signup extends \Core\Controller
 
     public function activateAction()
     {
-        User::activate($this->route_params['token']); // 'token' u route_params je omogucen rucno definisanom rutom u index.php koja pomocu regexa hvata token u poslednjem delu url-a, dok su route_params omoguceni izvrsavanjem konstruktorske funkcije u apstraktnoj klasi Controller
+        User::activate($this->route_params['token']); // 'token' in route_params is enabled by manually defined route in index.php that catches token at the end of url string using regex. route_params themselves are enabled as properties by constructor function execution in abstract Controller class
 
         $this->redirect('/signup/activated');        
     }
@@ -53,7 +49,7 @@ class Signup extends \Core\Controller
     // protected function before()
     // {
     //     echo "(before) ";
-    //     // return false; // ukoliko vratimo false, nece se izvrsiti ni glavna ni metoda after zahvaljujuci ispitivanju u __call metodi apstraktne klase Controler koja je parent class za Home
+    //     // return false; // if we return false the main method (that comes after before() method) won't be executed thanks to evaluation __call method of the abstract Controler class that is a parent class
     // }
 
     // protected function after()

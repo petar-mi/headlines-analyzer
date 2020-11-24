@@ -4,15 +4,7 @@
 
 {% block body %}
 
-<!-- zakomentarisani deo koji sledi je iz prvog tutorijala  -->
-<!-- <p>Hello from a Twig template, {{ name }}!</p>
-
-    <ul>
-        {% for colour in colours %}
-            <li>{{ colour }}</li>
-        {% endfor %}
-    </ul> -->
-<!-- deo koji se prikazuje samo ukoliko je user ulogovan -->
+<!-- only renders if user is logged in  -->
 {% if current_user %}
 <h3 style="margin-top: 20px; margin-bottom: 20px;">Welcome, {{ current_user.name }}.</h3>
 <p class="col-xl-5 col-lg-5 col-md-6 col-sm-9 col-12">This app allows you to browse through a collection of news headlines and see which words appear most frequently in them.

@@ -1,11 +1,11 @@
 <?php
 
 namespace App;
-use PepipostAPILib; // da bi uvezao ovaj namespace morao sam rucno da dodam red za autoload u index.php, a glasi ovako: require_once dirname(__DIR__) . '/vendor/test/vendor/autoload.php'; 
+use PepipostAPILib; // for this namespace to be loaded a line was manually added to index.php -  require_once dirname(__DIR__) . '/vendor/test/vendor/autoload.php'; 
 
 class Mail
 {
-    public static function send($to, $subject, $text, $html) // u pepipost nema opcija za slanje plain text-a, poruka se salje samo u okviru html-a
+    public static function send($to, $subject, $text, $html) // pepipost doesn't have plain text sending option, a message can only be sent through html-a
     {
         $client = new PepipostAPILib\PepipostAPIClient();
         $emailController = $client->getEmail();

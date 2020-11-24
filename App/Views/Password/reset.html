@@ -4,8 +4,8 @@
 
 {% block footer %}
 
-<script src="/js/hideShowPassword.min.js"></script> <!-- jquery plugin skinut s neta koji pravi kucicu za prikazivanje passworda -->
-<script src="/js/app.js"></script> <!-- deo koji se bavi validacijom password-a u jquery-iju -->
+<script src="/js/hideShowPassword.min.js"></script> <!-- downloaded jquery plugin that makes a checkbox for showing/hiding password -->
+<script src="/js/app.js"></script> <!-- validating password using jquery -->
 
 <script>
         $(document).ready(function() {
@@ -22,7 +22,7 @@
                     }
                 }
             });
-            $('#inputPassword').hideShowPassword({ // kucica za prikazivanje passworda (radi koristeci gore ucitanu jquery skriptu)
+            $('#inputPassword').hideShowPassword({ // password showing/hiding checkbox (uses previously loaded jquery script)
                 show: false,
                 innerToggle: 'focus'
             });
@@ -34,7 +34,7 @@
 
 <h1>Reset password</h1>
 
-<!-- deo koji proverava da li postoje greske koje su prosledjene i ispisuje ih -->
+<!-- checks if the erros were passed and prints them if thay exist -->
 {% if user.errors is not empty %}
     <p>Errors:</p>
     <ul>{% for error in user.errors %}
@@ -45,7 +45,7 @@
 
 
 <form method="POST" id="formPassword" action="/password/reset-password">
-    <!-- sledeci je red je (za usera nevidljivi) input koji sluzi samo da prihvati vrednost token putem twig-a i onda ga preko forme posalje na adresu navedenu u action zaradi promene passworda: -->
+    <!-- next line is an input (invisible to user) used only to accept a value passed by twig and forward it using <form> to url given in action property for the purpose of changing a password -->
     <input type="hidden" name="token" value="{{ token }}" /> 
     <div class="form-group">
         <label for="inputPassword">Password</label>

@@ -8,54 +8,54 @@ use App\Flash;
 use App\Models\Keywords;
 use App\Config;
 
-class Profile extends Authenticated // moramo biti ulogovani da bi smo videli stranicu za podesavanja profila
+class Profile extends Authenticated // we have to be logged-in to be able to see profile edit page
 {
     protected function before()
     {
-        parent::before(); // poziva metodu before() iz Authenticated klase koja zahteva da korisnik bude ulogovan
-        // bez parent::before() metoda before() iz klase Profile pregazila bi (overriding) metodu iz parent klase i ne bi bilo potrebno da korisnik bude ulogovan da bi se prikazao i editovao profil
-        $this->user = Auth::getUser(); // posto se u svakoj metodi u ovom, Profile.php controller-u pozivala Auth::getUser() metoda, na ovaj nacin ona se automatski izvrsava prilikom poziva bilo koje metode iz Profile.php
+        parent::before(); // calls before() method from Authenticated class that requires for user to be logged-in
+        // without parent::before() method before() from Profile class would override method from parent class & it wouldn't be needed for user to be logged-in to render and edit profile
+        $this->user = Auth::getUser(); // because in each method of this Profile.php controller Auth::getUser() method was called, this way it automatically executes when calling any of Profile.php methods
     }
 
     public function showAction()
     {
         View::renderTemplate('Profile/show.html', [
-            'user' => $this->user // prosledjujemo objekat korisnika, s obzirom da smo vec ulogovani
-        ]);                       // $this->user je definisan u before() funkciji gore
+            'user' => $this->user // we're passing user object since we are logged in already
+        ]);                       // $this->user is defined in before() function above
     }
 
     public function editAction()
     {
         View::renderTemplate('Profile/edit.html', [
-            'user' => $this->user // prosledjujemo objekat korisnika, s obzirom da smo vec ulogovani
-        ]);                       // $this->user je definisan u before() funkciji gore
+            'user' => $this->user // we're passing user object since we are logged in already
+        ]);                       // $this->user is defined in before() function above
     }
 
     public function updateAction()
     {
-        if ($this->user->updateProfile($_POST)) { // $this->user je definisan u before() funkciji gore
+        if ($this->user->updateProfile($_POST)) { // $this->user is defined in before() function above
 
             Flash::addMessage('Changes saved');
             $this->redirect('/profile/show');
-        } else { // ako nije prosla validacija ponovo prikazujemo formu za edit
+        } else { // if validation has failed we render edit profile page again
 
             View::renderTemplate('Profile/edit.html', [
-                'user' => $this->user // $this->user je definisan u before() funkciji gore
+                'user' => $this->user // $this->user is defined in before() function above
             ]);
         };
     }
 
-    public function showCollectedChoiceAction() // *** akcija koju sam ja dodao ***
+    public function showCollectedChoiceAction() 
     {
         View::renderTemplate('Profile/show_collected_choice.html', [
-            'user' => $this->user // prosledjujemo objekat korisnika, s obzirom da smo vec ulogovani
-        ]);                       // $this->user je definisan u before() funkciji gore
+            'user' => $this->user // we're passing user object since we are logged in already
+        ]);                       // $this->user is defined in before() function above
     }
 
     public function collectUserInfoAction()
     {
-        // !!! VAZNO !!!
-        $postReqData = file_get_contents('php://input'); // kada PHP prima post request a nije u URLencoded formatu onda se na ovaj nacin dolazi do requesta!!! 
+        // !!! IMPORTANT !!!
+        $postReqData = file_get_contents('php://input'); // when PHP receives post request and it's not in URLencoded format then this is the way to access the request !!! 
         $postReqDataObj = json_decode($postReqData);
         
         $retrievedKeywordsFromDb = unserialize($this->user->readPreferredKeywords()['preferred_keywords']); // loads keywords counter from db
@@ -71,24 +71,25 @@ class Profile extends Authenticated // moramo biti ulogovani da bi smo videli st
 
         $this->user->updateClickedTitles(serialize($clickedTitlesFromDb)); // saves updated clicked titles array to DB
 
-
         
+        // ****** THIS IS A CODE REPEATING ITSELF - COMPARE TO Collections.php showAction() function *************
+
         $keyWordsArr = preg_split("/ |:|!|\?|\.|,|;|-|\"|\(|\)|\.\.\./", $postReqDataObj->title);
 
-        $keyWordsArr = array_filter( // izbacuje clanove niza koji sadrze brojevne vrednosti
+        $keyWordsArr = array_filter( 
             $keyWordsArr,
             function ($arrayEntry) {
-                return !preg_match('/\d/', $arrayEntry);
+                return !preg_match('/\d/', $arrayEntry); // returns only non-numeric array elements
             }
         );
 
         foreach ($keyWordsArr as $keyword => $value) {
 
-            $keyWordsArr[$keyword] = ucwords(strtolower($value)); // pretvara svaki clan niza u title case osim onih koji sadrze karaktere sa dijaktritickim znacima
-            $keyWordsArr[$keyword] = preg_replace(Config::CHARS_TO_LOOK_FOR, Config::CHARS_TO_CHANGE, $keyWordsArr[$keyword]); // ispravlja reci sa dijakritickim znakovima tako sto svakog clan niza $karakteriZaPretragu pronadjenim u stringu pomocu regexa pretvara u odgovarajuci clan niza $karakteriZaZamenu
+            $keyWordsArr[$keyword] = ucwords(strtolower($value)); // converts each array element to title case exept those that contain diacritical marks
+            $keyWordsArr[$keyword] = preg_replace(Config::CHARS_TO_LOOK_FOR, Config::CHARS_TO_CHANGE, $keyWordsArr[$keyword]); // corrects words with diacritical marks by converting each Config::CHARS_TO_LOOK_FOR element found in a string using regex into appropriate Config::CHARS_TO_CHANGE element
         };
 
-        $keyWordsFiltered = array_diff($keyWordsArr, Config::EXCLUDE_WORDS); // vraca razliku skupova
+        $keyWordsFiltered = array_diff($keyWordsArr, Config::EXCLUDE_WORDS); // returns the difference of arrays
         // $keyWordsFilteredUnique = array_unique($keyWordsFiltered);
         // $keyWordsFilteredUnique = array_values($keyWordsFilteredUnique); // this normalizes numeric indexes in natural order (0,1,2,3,4) because some indexes were missing after previous filtering
 
@@ -100,6 +101,9 @@ class Profile extends Authenticated // moramo biti ulogovani da bi smo videli st
                 $nizSvihReciCounted[$item] = 1;
             }
         }
+
+        // ****** END OF CODE REPEATING ITSELF - COMPARE TO Collections.php showAction() function *************
+
 
         if ($retrievedKeywordsFromDb) {
             foreach ($retrievedKeywordsFromDb as $key => $count) { // if keyword exists in db its count is increased
